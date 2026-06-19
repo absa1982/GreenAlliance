@@ -35,28 +35,44 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--gra
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ===== LOGIN ===== */
-#loginScreen{display:flex;min-height:100vh;background:linear-gradient(150deg,#0A1628 0%,#0F2040 40%,#162852 70%,#1C3368 100%);align-items:center;justify-content:center;position:fixed;inset:0;z-index:1000}
+@keyframes orb-drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-20px) scale(1.05)}66%{transform:translate(-20px,15px) scale(0.97)}}
+@keyframes card-in{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+#loginScreen{display:flex;min-height:100vh;background:#060E1E;align-items:center;justify-content:center;position:fixed;inset:0;z-index:1000;overflow:hidden}
 #loginScreen.hidden{display:none}
-.login-card{background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:48px;width:420px;box-shadow:0 32px 80px rgba(0,0,0,0.4)}
-.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:36px;justify-content:center}
-.login-logo svg{width:44px;height:44px}
-.login-logo-text{font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.5px}
-.login-logo-text span{color:#FFB380}
-.login-subtitle{text-align:center;color:rgba(255,255,255,0.5);font-size:14px;margin-bottom:32px}
-.login-input{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:14px 16px;color:#fff;font-size:15px;outline:none;transition:border .2s;margin-bottom:14px;font-family:inherit}
-.login-input::placeholder{color:rgba(255,255,255,0.3)}
-.login-input:focus{border-color:#FF5500;background:rgba(255,255,255,0.1)}
-.login-btn{width:100%;background:linear-gradient(135deg,#FF5500,#E04500);border:none;border-radius:10px;padding:15px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:opacity .2s,transform .1s;font-family:inherit;margin-top:6px;letter-spacing:.3px}
-.login-btn:hover{opacity:.9;transform:translateY(-1px)}
-.login-hint{text-align:center;color:rgba(255,255,255,0.3);font-size:12px;margin-top:20px}
-/* ROLE SELECTOR */
-.role-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
-.role-btn{border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);border-radius:12px;padding:16px 10px;cursor:pointer;transition:all .2s;text-align:center;color:rgba(255,255,255,0.6)}
-.role-btn:hover{border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:#fff}
-.role-btn.selected{border-color:#FF5500;background:rgba(255,85,0,0.25);color:#fff}
-.role-btn-icon{font-size:24px;margin-bottom:6px}
-.role-btn-label{font-size:13px;font-weight:600}
-.role-btn-desc{font-size:11px;opacity:.6;margin-top:2px}
+.login-orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(90px)}
+.login-orb-1{width:560px;height:560px;background:radial-gradient(circle,rgba(255,85,0,.22) 0%,transparent 70%);top:-140px;right:-100px;animation:orb-drift 9s ease-in-out infinite}
+.login-orb-2{width:640px;height:640px;background:radial-gradient(circle,rgba(15,80,200,.26) 0%,transparent 70%);bottom:-160px;left:-120px;animation:orb-drift 12s ease-in-out infinite reverse}
+.login-orb-3{width:320px;height:320px;background:radial-gradient(circle,rgba(255,100,30,.13) 0%,transparent 70%);top:45%;left:35%;animation:orb-drift 7s ease-in-out infinite 3s}
+.login-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,#000 40%,transparent 100%)}
+.login-card{background:rgba(8,18,40,.82);backdrop-filter:blur(48px);-webkit-backdrop-filter:blur(48px);border:1px solid rgba(255,255,255,.11);border-top:1px solid rgba(255,255,255,.22);border-radius:28px;padding:52px 48px 44px;width:448px;box-shadow:0 48px 128px rgba(0,0,0,.75),0 0 80px rgba(255,85,0,.07),inset 0 1px 0 rgba(255,255,255,.12);position:relative;z-index:1;animation:card-in .5s cubic-bezier(.4,0,.2,1) both}
+.login-card::before{content:'';position:absolute;inset:0;border-radius:28px;padding:1px;background:linear-gradient(135deg,rgba(255,85,0,.55) 0%,rgba(255,255,255,.05) 40%,rgba(15,80,200,.35) 100%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:destination-out;mask-composite:exclude;pointer-events:none}
+.login-logo{display:flex;align-items:center;gap:14px;margin-bottom:6px;justify-content:center}
+.login-logo svg{width:50px;height:50px;filter:drop-shadow(0 4px 16px rgba(255,85,0,.45))}
+.login-logo-text{font-size:30px;font-weight:800;color:#fff;letter-spacing:-1px}
+.login-logo-text span{background:linear-gradient(135deg,#FF5500,#FF9955);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.login-tagline{text-align:center;font-size:11px;font-weight:600;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:36px;margin-top:8px}
+.login-section-label{font-size:11px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
+.role-selector{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+.role-btn{border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);border-radius:16px;padding:20px 12px 16px;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);text-align:center;color:rgba(255,255,255,.5);position:relative;overflow:hidden}
+.role-btn:hover{border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.08);color:#fff;transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.4)}
+.role-btn.selected{border-color:rgba(255,85,0,.8);background:rgba(255,85,0,.12);color:#fff;box-shadow:0 0 0 1px rgba(255,85,0,.25),0 8px 28px rgba(255,85,0,.18)}
+.role-btn-icon{font-size:28px;margin-bottom:9px;line-height:1}
+.role-btn-label{font-size:13.5px;font-weight:700;letter-spacing:-.1px}
+.role-btn-desc{font-size:11px;opacity:.5;margin-top:3px}
+.login-fields{margin-bottom:6px}
+.login-field{position:relative;margin-bottom:13px}
+.login-field-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.28);font-size:15px;pointer-events:none;transition:color .2s}
+.login-field:focus-within .login-field-icon{color:rgba(255,85,0,.7)}
+.login-input{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:13px;padding:15px 16px 15px 46px;color:#fff;font-size:15px;outline:none;transition:all .2s;font-family:inherit}
+.login-input::placeholder{color:rgba(255,255,255,.22)}
+.login-input:focus{border-color:#FF5500;background:rgba(255,85,0,.07);box-shadow:0 0 0 4px rgba(255,85,0,.1)}
+.login-btn{width:100%;background:linear-gradient(135deg,#FF5500 0%,#FF3300 100%);border:none;border-radius:13px;padding:17px 16px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s cubic-bezier(.4,0,.2,1);font-family:inherit;margin-top:10px;letter-spacing:.4px;box-shadow:0 8px 28px rgba(255,85,0,.45),0 2px 8px rgba(0,0,0,.3);position:relative;overflow:hidden}
+.login-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(255,255,255,.18) 0%,transparent 60%);border-radius:13px;pointer-events:none}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(255,85,0,.55),0 4px 10px rgba(0,0,0,.3)}
+.login-btn:active{transform:translateY(1px);box-shadow:0 4px 16px rgba(255,85,0,.4)}
+.login-hint{text-align:center;color:rgba(255,255,255,.18);font-size:11.5px;margin-top:22px;line-height:1.7}
+.login-hint b{color:rgba(255,255,255,.32);font-weight:500}
 
 /* WORKER PORTAL */
 #workerPortal{display:none;min-height:100vh;background:var(--gray-50)}
@@ -340,17 +356,23 @@ tr:hover td{background:var(--gray-50)}
 
 <!-- LOGIN -->
 <div id="loginScreen">
+  <!-- Background glows -->
+  <div class="login-orb login-orb-1"></div>
+  <div class="login-orb login-orb-2"></div>
+  <div class="login-orb login-orb-3"></div>
+  <div class="login-grid"></div>
+  <!-- Card -->
   <div class="login-card">
     <div class="login-logo">
       <svg viewBox="0 0 44 44" fill="none">
         <rect width="44" height="44" rx="11" fill="url(#lg1)"/>
         <path d="M12 22h8l3-8 4 16 3-10 2 6h4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <defs><linearGradient id="lg1" x1="0" y1="0" x2="44" y2="44"><stop stop-color="#FF5500"/><stop offset="1" stop-color="#FF7733"/></linearGradient></defs>
+        <defs><linearGradient id="lg1" x1="0" y1="0" x2="44" y2="44"><stop stop-color="#FF5500"/><stop offset="1" stop-color="#FF8833"/></linearGradient></defs>
       </svg>
       <div class="login-logo-text">Green<span>Alliance</span></div>
     </div>
-    <div class="login-subtitle">Workforce Management Platform</div>
-    <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Sign in as</div>
+    <div class="login-tagline">Workforce Management Platform</div>
+    <div class="login-section-label">Sign in as</div>
     <div class="role-selector">
       <div class="role-btn selected" id="roleAdmin" onclick="selectRole('admin')">
         <div class="role-btn-icon">🏢</div>
@@ -363,10 +385,18 @@ tr:hover td{background:var(--gray-50)}
         <div class="role-btn-desc">My shifts & clock in</div>
       </div>
     </div>
-    <input class="login-input" type="email" placeholder="admin@greenalliance.dk" value="" id="loginEmail" onkeydown="if(event.key==='Enter')doLogin()">
-    <input class="login-input" type="password" placeholder="Password" value="" id="loginPass" onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="login-btn" onclick="doLogin()">Sign In</button>
-    <div class="login-hint">Admin: admin@greenalliance.dk · Worker: worker@greenalliance.dk</div>
+    <div class="login-fields">
+      <div class="login-field">
+        <span class="login-field-icon">✉</span>
+        <input class="login-input" type="email" placeholder="Email address" value="" id="loginEmail" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="login-field">
+        <span class="login-field-icon">🔒</span>
+        <input class="login-input" type="password" placeholder="Password" value="" id="loginPass" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+    </div>
+    <button class="login-btn" onclick="doLogin()">Sign In →</button>
+    <div class="login-hint"><b>Admin:</b> admin@greenalliance.dk &nbsp;·&nbsp; <b>Worker:</b> worker@greenalliance.dk</div>
   </div>
 </div>
 
