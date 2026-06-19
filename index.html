@@ -6,14 +6,14 @@
 <title>Green Alliance — Workforce Management Platform</title>
 <style>
 :root {
-  --primary: #4f7344;
-  --primary-dark: #3a5632;
-  --primary-light: #eaf2e8;
-  --accent: #6b9e5e;
+  --primary: #FF5500;
+  --primary-dark: #E04500;
+  --primary-light: #FFF0E8;
+  --accent: #FF7733;
   --success: #059669;
   --warning: #d97706;
   --danger: #dc2626;
-  --dark: #0f172a;
+  --dark: #0D1C38;
   --gray-900: #111827;
   --gray-800: #1f2937;
   --gray-700: #374151;
@@ -35,25 +35,25 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--gra
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ===== LOGIN ===== */
-#loginScreen{display:flex;min-height:100vh;background:linear-gradient(150deg,#0d1a0e 0%,#152b15 40%,#1e4020 70%,#2a5a2c 100%);align-items:center;justify-content:center;position:fixed;inset:0;z-index:1000}
+#loginScreen{display:flex;min-height:100vh;background:linear-gradient(150deg,#0A1628 0%,#0F2040 40%,#162852 70%,#1C3368 100%);align-items:center;justify-content:center;position:fixed;inset:0;z-index:1000}
 #loginScreen.hidden{display:none}
 .login-card{background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:48px;width:420px;box-shadow:0 32px 80px rgba(0,0,0,0.4)}
 .login-logo{display:flex;align-items:center;gap:12px;margin-bottom:36px;justify-content:center}
 .login-logo svg{width:44px;height:44px}
 .login-logo-text{font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.5px}
-.login-logo-text span{color:#8fc882}
+.login-logo-text span{color:#FFB380}
 .login-subtitle{text-align:center;color:rgba(255,255,255,0.5);font-size:14px;margin-bottom:32px}
 .login-input{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:14px 16px;color:#fff;font-size:15px;outline:none;transition:border .2s;margin-bottom:14px;font-family:inherit}
 .login-input::placeholder{color:rgba(255,255,255,0.3)}
-.login-input:focus{border-color:#6b9e5e;background:rgba(255,255,255,0.1)}
-.login-btn{width:100%;background:linear-gradient(135deg,#4f7344,#3a5632);border:none;border-radius:10px;padding:15px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:opacity .2s,transform .1s;font-family:inherit;margin-top:6px;letter-spacing:.3px}
+.login-input:focus{border-color:#FF5500;background:rgba(255,255,255,0.1)}
+.login-btn{width:100%;background:linear-gradient(135deg,#FF5500,#E04500);border:none;border-radius:10px;padding:15px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:opacity .2s,transform .1s;font-family:inherit;margin-top:6px;letter-spacing:.3px}
 .login-btn:hover{opacity:.9;transform:translateY(-1px)}
 .login-hint{text-align:center;color:rgba(255,255,255,0.3);font-size:12px;margin-top:20px}
 /* ROLE SELECTOR */
 .role-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
 .role-btn{border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);border-radius:12px;padding:16px 10px;cursor:pointer;transition:all .2s;text-align:center;color:rgba(255,255,255,0.6)}
 .role-btn:hover{border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:#fff}
-.role-btn.selected{border-color:#6b9e5e;background:rgba(79,115,68,0.25);color:#fff}
+.role-btn.selected{border-color:#FF5500;background:rgba(255,85,0,0.25);color:#fff}
 .role-btn-icon{font-size:24px;margin-bottom:6px}
 .role-btn-label{font-size:13px;font-weight:600}
 .role-btn-desc{font-size:11px;opacity:.6;margin-top:2px}
@@ -64,10 +64,10 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--gra
 .worker-portal-header{background:var(--dark);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .worker-portal-logo{display:flex;align-items:center;gap:10px}
 .worker-portal-logo-text{font-size:16px;font-weight:700;color:#fff}
-.worker-portal-logo-text span{color:#8fc882}
+.worker-portal-logo-text span{color:#FFB380}
 .worker-portal-user{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.7);font-size:13px}
 .worker-portal-content{max-width:720px;margin:0 auto;padding:28px 16px}
-.worker-clockin-wrap{background:linear-gradient(135deg,#0d1a0e,#1e4020,#2a5a2c);border-radius:20px;padding:32px;text-align:center;color:#fff;margin-bottom:22px}
+.worker-clockin-wrap{background:linear-gradient(135deg,#0A1628,#162852,#1C3368);border-radius:20px;padding:32px;text-align:center;color:#fff;margin-bottom:22px}
 .worker-clock-time{font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1}
 .worker-clock-date{color:rgba(255,255,255,0.5);font-size:13px;margin-top:6px}
 .worker-shift-info{background:rgba(255,255,255,0.08);border-radius:12px;padding:14px 18px;margin:18px 0;text-align:left;border:1px solid rgba(255,255,255,0.1)}
@@ -86,22 +86,22 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--gra
 /* ===== SIDEBAR ===== */
 .sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--dark);display:flex;flex-direction:column;position:fixed;left:0;top:0;z-index:100;transition:transform .3s}
 .sidebar-logo{padding:24px 20px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,0.06)}
-.sidebar-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,#4f7344,#6b9e5e);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.sidebar-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,#FF5500,#FF7733);border-radius:9px;display:flex;align-items:center;justify-content:center}
 .sidebar-logo-text{font-size:18px;font-weight:700;color:#fff}
-.sidebar-logo-text span{color:#8fc882}
+.sidebar-logo-text span{color:#FFB380}
 .sidebar-nav{flex:1;padding:16px 12px;overflow-y:auto}
 .nav-section{margin-bottom:24px}
 .nav-section-label{font-size:10px;font-weight:600;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:1px;padding:0 10px;margin-bottom:6px}
 .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;cursor:pointer;color:rgba(255,255,255,0.55);font-size:13.5px;font-weight:500;transition:all .15s;position:relative;user-select:none}
 .nav-item:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.85)}
-.nav-item.active{background:linear-gradient(135deg,rgba(79,115,68,0.35),rgba(107,158,94,0.2));color:#fff}
-.nav-item.active::before{content:'';position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:20px;background:linear-gradient(#4f7344,#6b9e5e);border-radius:0 3px 3px 0}
+.nav-item.active{background:linear-gradient(135deg,rgba(255,85,0,0.35),rgba(255,119,51,0.2));color:#fff}
+.nav-item.active::before{content:'';position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:20px;background:linear-gradient(#FF5500,#FF7733);border-radius:0 3px 3px 0}
 .nav-item svg{width:17px;height:17px;flex-shrink:0}
 .nav-badge{margin-left:auto;background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px}
 .sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,0.06)}
 .sidebar-user{display:flex;align-items:center;gap:10px;padding:10px;border-radius:9px;cursor:pointer;transition:background .15s}
 .sidebar-user:hover{background:rgba(255,255,255,0.06)}
-.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4f7344,#6b9e5e);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#FF5500,#FF7733);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
 .sidebar-user-info{flex:1;min-width:0}
 .sidebar-user-name{font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sidebar-user-role{font-size:11px;color:rgba(255,255,255,0.35)}
@@ -128,7 +128,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--gra
 .page-header h1{font-size:22px;font-weight:700}
 .page-header p{font-size:13.5px;color:var(--gray-500);margin-top:2px}
 .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:inherit;white-space:nowrap}
-.btn-primary{background:linear-gradient(135deg,#4f7344,#6b9e5e);color:#fff}
+.btn-primary{background:linear-gradient(135deg,#FF5500,#FF7733);color:#fff}
 .btn-primary:hover{opacity:.9;transform:translateY(-1px)}
 .btn-secondary{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--gray-200)}
 .btn-secondary:hover{background:var(--gray-200)}
@@ -191,7 +191,7 @@ tr:hover td{background:var(--gray-50)}
 .cal-shift:hover{opacity:.8}
 .cal-shift.morning{background:#dbeafe;color:#1e40af}
 .cal-shift.afternoon{background:#fef3c7;color:#92400e}
-.cal-shift.evening{background:#d6e8d3;color:#3a5632}
+.cal-shift.evening{background:#d6e8d3;color:#E04500}
 .cal-shift.night{background:#1f2937;color:#e5e7eb}
 
 /* FORM */
@@ -230,7 +230,7 @@ tr:hover td{background:var(--gray-50)}
 @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 
 /* CLOCK IN */
-.clockin-card{background:linear-gradient(135deg,#0d1a0e,#1e4020,#2a5a2c);border-radius:20px;padding:36px;text-align:center;color:#fff;margin-bottom:24px}
+.clockin-card{background:linear-gradient(135deg,#0A1628,#162852,#1C3368);border-radius:20px;padding:36px;text-align:center;color:#fff;margin-bottom:24px}
 .clockin-time{font-size:56px;font-weight:800;letter-spacing:-2px;margin:16px 0}
 .clockin-date{color:rgba(255,255,255,0.5);font-size:14px}
 .clockin-status{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:99px;font-size:14px;font-weight:600;margin:16px 0}
@@ -246,7 +246,7 @@ tr:hover td{background:var(--gray-50)}
 
 /* CHART PLACEHOLDER */
 .chart-area{height:200px;display:flex;align-items:flex-end;gap:6px;padding:10px 0}
-.chart-bar{flex:1;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#4f7344,#6b9e5e);opacity:.85;transition:opacity .2s;cursor:pointer;position:relative}
+.chart-bar{flex:1;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#FF5500,#FF7733);opacity:.85;transition:opacity .2s;cursor:pointer;position:relative}
 .chart-bar:hover{opacity:1}
 .chart-bar-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--gray-500);white-space:nowrap}
 
@@ -290,7 +290,7 @@ tr:hover td{background:var(--gray-50)}
 .toggle input:checked + .toggle-slider:before{transform:translateX(20px)}
 
 /* REPORT */
-.report-header{background:linear-gradient(135deg,#4f7344,#6b9e5e);border-radius:var(--radius);padding:24px;color:#fff;margin-bottom:20px}
+.report-header{background:linear-gradient(135deg,#FF5500,#FF7733);border-radius:var(--radius);padding:24px;color:#fff;margin-bottom:20px}
 .report-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
 .report-kpi-item{background:rgba(255,255,255,0.1);border-radius:10px;padding:14px}
 .report-kpi-val{font-size:22px;font-weight:800;margin-bottom:2px}
@@ -304,7 +304,7 @@ tr:hover td{background:var(--gray-50)}
 .highlight{background:#fef3c7;border-radius:3px;padding:0 2px}
 
 /* LOCATION MAP */
-.map-placeholder{background:linear-gradient(135deg,#eaf2e8,#d6e8d3);border-radius:12px;height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:16px}
+.map-placeholder{background:linear-gradient(135deg,#FFF0E8,#d6e8d3);border-radius:12px;height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:16px}
 .map-pin{position:absolute;width:40px;height:40px;background:var(--primary);border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 4px 12px rgba(26,86,219,0.4)}
 .map-pin::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
 .map-radius{position:absolute;width:120px;height:120px;border:2px dashed rgba(26,86,219,0.4);border-radius:50%}
@@ -345,7 +345,7 @@ tr:hover td{background:var(--gray-50)}
       <svg viewBox="0 0 44 44" fill="none">
         <rect width="44" height="44" rx="11" fill="url(#lg1)"/>
         <path d="M12 22h8l3-8 4 16 3-10 2 6h4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <defs><linearGradient id="lg1" x1="0" y1="0" x2="44" y2="44"><stop stop-color="#4f7344"/><stop offset="1" stop-color="#6b9e5e"/></linearGradient></defs>
+        <defs><linearGradient id="lg1" x1="0" y1="0" x2="44" y2="44"><stop stop-color="#FF5500"/><stop offset="1" stop-color="#FF7733"/></linearGradient></defs>
       </svg>
       <div class="login-logo-text">Green<span>Alliance</span></div>
     </div>
@@ -933,7 +933,7 @@ tr:hover td{background:var(--gray-50)}
         </div>
         <div class="integration-grid">
           <div class="integration-card">
-            <div class="integration-logo" style="background:#eaf2e8;color:#4f7344;font-size:14px;font-weight:800">DAN</div>
+            <div class="integration-logo" style="background:#FFF0E8;color:#FF5500;font-size:14px;font-weight:800">DAN</div>
             <div class="integration-name">Danløn</div>
             <div class="integration-desc">Sync worker hours and salary data directly to Danløn payroll system. Auto-export on month close.</div>
             <div class="integration-status">
@@ -1136,7 +1136,7 @@ tr:hover td{background:var(--gray-50)}
 <div id="workerPortal">
   <header class="worker-portal-header">
     <div class="worker-portal-logo">
-      <div style="width:30px;height:30px;background:linear-gradient(135deg,#4f7344,#6b9e5e);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-right:2px">
+      <div style="width:30px;height:30px;background:linear-gradient(135deg,#FF5500,#FF7733);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-right:2px">
         <svg width="16" height="16" viewBox="0 0 44 44" fill="none"><path d="M12 22h8l3-8 4 16 3-10 2 6h4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="worker-portal-logo-text">Green<span>Alliance</span></div>
@@ -1497,7 +1497,7 @@ function genPassword(){
 }
 function initials(n){ return (n||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
 function avatarColor(n){
-  const c=['#4f7344','#6b9e5e','#059669','#0891b2','#7c3aed','#d97706','#dc2626'];
+  const c=['#FF5500','#FF7733','#059669','#0891b2','#7c3aed','#d97706','#dc2626'];
   let h=0; for(const ch of (n||''))h=(h*31+ch.charCodeAt(0))&0xffffffff;
   return c[Math.abs(h)%c.length];
 }
