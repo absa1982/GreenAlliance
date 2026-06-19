@@ -1,0 +1,2542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Green Alliance — Workforce Management Platform</title>
+<style>
+:root {
+  --primary: #4f7344;
+  --primary-dark: #3a5632;
+  --primary-light: #eaf2e8;
+  --accent: #6b9e5e;
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --dark: #0f172a;
+  --gray-900: #111827;
+  --gray-800: #1f2937;
+  --gray-700: #374151;
+  --gray-600: #4b5563;
+  --gray-500: #6b7280;
+  --gray-400: #9ca3af;
+  --gray-300: #d1d5db;
+  --gray-200: #e5e7eb;
+  --gray-100: #f3f4f6;
+  --gray-50: #f9fafb;
+  --white: #ffffff;
+  --sidebar-w: 240px;
+  --radius: 12px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--gray-50);color:var(--gray-900);min-height:100vh;overflow-x:hidden}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ===== LOGIN ===== */
+#loginScreen{display:flex;min-height:100vh;background:linear-gradient(150deg,#0d1a0e 0%,#152b15 40%,#1e4020 70%,#2a5a2c 100%);align-items:center;justify-content:center;position:fixed;inset:0;z-index:1000}
+#loginScreen.hidden{display:none}
+.login-card{background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:48px;width:420px;box-shadow:0 32px 80px rgba(0,0,0,0.4)}
+.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:36px;justify-content:center}
+.login-logo svg{width:44px;height:44px}
+.login-logo-text{font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.5px}
+.login-logo-text span{color:#8fc882}
+.login-subtitle{text-align:center;color:rgba(255,255,255,0.5);font-size:14px;margin-bottom:32px}
+.login-input{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:14px 16px;color:#fff;font-size:15px;outline:none;transition:border .2s;margin-bottom:14px;font-family:inherit}
+.login-input::placeholder{color:rgba(255,255,255,0.3)}
+.login-input:focus{border-color:#6b9e5e;background:rgba(255,255,255,0.1)}
+.login-btn{width:100%;background:linear-gradient(135deg,#4f7344,#3a5632);border:none;border-radius:10px;padding:15px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:opacity .2s,transform .1s;font-family:inherit;margin-top:6px;letter-spacing:.3px}
+.login-btn:hover{opacity:.9;transform:translateY(-1px)}
+.login-hint{text-align:center;color:rgba(255,255,255,0.3);font-size:12px;margin-top:20px}
+/* ROLE SELECTOR */
+.role-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.role-btn{border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);border-radius:12px;padding:16px 10px;cursor:pointer;transition:all .2s;text-align:center;color:rgba(255,255,255,0.6)}
+.role-btn:hover{border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:#fff}
+.role-btn.selected{border-color:#6b9e5e;background:rgba(79,115,68,0.25);color:#fff}
+.role-btn-icon{font-size:24px;margin-bottom:6px}
+.role-btn-label{font-size:13px;font-weight:600}
+.role-btn-desc{font-size:11px;opacity:.6;margin-top:2px}
+
+/* WORKER PORTAL */
+#workerPortal{display:none;min-height:100vh;background:var(--gray-50)}
+#workerPortal.active{display:block}
+.worker-portal-header{background:var(--dark);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.worker-portal-logo{display:flex;align-items:center;gap:10px}
+.worker-portal-logo-text{font-size:16px;font-weight:700;color:#fff}
+.worker-portal-logo-text span{color:#8fc882}
+.worker-portal-user{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.7);font-size:13px}
+.worker-portal-content{max-width:720px;margin:0 auto;padding:28px 16px}
+.worker-clockin-wrap{background:linear-gradient(135deg,#0d1a0e,#1e4020,#2a5a2c);border-radius:20px;padding:32px;text-align:center;color:#fff;margin-bottom:22px}
+.worker-clock-time{font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1}
+.worker-clock-date{color:rgba(255,255,255,0.5);font-size:13px;margin-top:6px}
+.worker-shift-info{background:rgba(255,255,255,0.08);border-radius:12px;padding:14px 18px;margin:18px 0;text-align:left;border:1px solid rgba(255,255,255,0.1)}
+.worker-shift-label{font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.worker-shift-val{font-size:15px;font-weight:600}
+.worker-tabs{display:flex;gap:2px;background:var(--gray-200);padding:4px;border-radius:10px;margin-bottom:20px}
+.worker-tab{flex:1;padding:9px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;color:var(--gray-500);border:none;background:none;font-family:inherit;transition:all .15s;text-align:center}
+.worker-tab.active{background:var(--white);color:var(--gray-900);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.worker-page{display:none}
+.worker-page.active{display:block}
+
+/* ===== APP SHELL ===== */
+#appShell{display:none;min-height:100vh}
+#appShell.active{display:flex}
+
+/* ===== SIDEBAR ===== */
+.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--dark);display:flex;flex-direction:column;position:fixed;left:0;top:0;z-index:100;transition:transform .3s}
+.sidebar-logo{padding:24px 20px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.sidebar-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,#4f7344,#6b9e5e);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.sidebar-logo-text{font-size:18px;font-weight:700;color:#fff}
+.sidebar-logo-text span{color:#8fc882}
+.sidebar-nav{flex:1;padding:16px 12px;overflow-y:auto}
+.nav-section{margin-bottom:24px}
+.nav-section-label{font-size:10px;font-weight:600;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:1px;padding:0 10px;margin-bottom:6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;cursor:pointer;color:rgba(255,255,255,0.55);font-size:13.5px;font-weight:500;transition:all .15s;position:relative;user-select:none}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.85)}
+.nav-item.active{background:linear-gradient(135deg,rgba(79,115,68,0.35),rgba(107,158,94,0.2));color:#fff}
+.nav-item.active::before{content:'';position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:20px;background:linear-gradient(#4f7344,#6b9e5e);border-radius:0 3px 3px 0}
+.nav-item svg{width:17px;height:17px;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px}
+.sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,0.06)}
+.sidebar-user{display:flex;align-items:center;gap:10px;padding:10px;border-radius:9px;cursor:pointer;transition:background .15s}
+.sidebar-user:hover{background:rgba(255,255,255,0.06)}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4f7344,#6b9e5e);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.sidebar-user-info{flex:1;min-width:0}
+.sidebar-user-name{font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user-role{font-size:11px;color:rgba(255,255,255,0.35)}
+
+/* ===== MAIN CONTENT ===== */
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:var(--white);border-bottom:1px solid var(--gray-200);padding:0 28px;height:64px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:18px;font-weight:700;color:var(--gray-900);flex:1}
+.topbar-search{display:flex;align-items:center;gap:8px;background:var(--gray-100);border:1px solid var(--gray-200);border-radius:9px;padding:8px 14px;width:260px}
+.topbar-search input{background:none;border:none;outline:none;font-size:13.5px;color:var(--gray-700);width:100%;font-family:inherit}
+.topbar-search input::placeholder{color:var(--gray-400)}
+.topbar-actions{display:flex;align-items:center;gap:10px}
+.icon-btn{width:38px;height:38px;border-radius:9px;border:1px solid var(--gray-200);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gray-600);transition:all .15s;position:relative}
+.icon-btn:hover{background:var(--gray-100);color:var(--gray-900)}
+.notif-dot{position:absolute;top:8px;right:8px;width:7px;height:7px;background:var(--danger);border-radius:50%;border:2px solid var(--white)}
+.content{flex:1;padding:28px;overflow-y:auto}
+
+/* ===== PAGES ===== */
+.page{display:none}
+.page.active{display:block}
+
+/* ===== COMPONENTS ===== */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.page-header h1{font-size:22px;font-weight:700}
+.page-header p{font-size:13.5px;color:var(--gray-500);margin-top:2px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:inherit;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,#4f7344,#6b9e5e);color:#fff}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-secondary{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--gray-200)}
+.btn-secondary:hover{background:var(--gray-200)}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-sm{padding:6px 13px;font-size:12.5px}
+.btn-icon{padding:8px;border-radius:8px}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:24px}
+.kpi-card{background:var(--white);border-radius:var(--radius);padding:22px;border:1px solid var(--gray-200);transition:box-shadow .2s}
+.kpi-card:hover{box-shadow:var(--shadow)}
+.kpi-icon{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.kpi-icon.blue{background:var(--primary-light);color:var(--primary)}
+.kpi-icon.green{background:#d1fae5;color:var(--success)}
+.kpi-icon.purple{background:#d6e8d3;color:var(--accent)}
+.kpi-icon.orange{background:#fff7ed;color:var(--warning)}
+.kpi-value{font-size:26px;font-weight:800;color:var(--gray-900);letter-spacing:-0.5px}
+.kpi-label{font-size:13px;color:var(--gray-500);margin-top:2px}
+.kpi-change{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;margin-top:8px;padding:3px 8px;border-radius:20px}
+.kpi-change.up{background:#d1fae5;color:var(--success)}
+.kpi-change.down{background:#fee2e2;color:var(--danger)}
+
+/* CARDS */
+.card{background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-200);overflow:hidden}
+.card-header{padding:18px 22px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:15px;font-weight:700}
+.card-body{padding:20px 22px}
+
+/* TABLE */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{font-size:11.5px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;padding:12px 16px;text-align:left;border-bottom:1px solid var(--gray-200);white-space:nowrap}
+td{padding:13px 16px;font-size:13.5px;color:var(--gray-700);border-bottom:1px solid var(--gray-100);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--gray-50)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:600}
+.badge-success{background:#d1fae5;color:var(--success)}
+.badge-warning{background:#fff7ed;color:var(--warning)}
+.badge-danger{background:#fee2e2;color:var(--danger)}
+.badge-blue{background:var(--primary-light);color:var(--primary)}
+.badge-purple{background:#d6e8d3;color:var(--accent)}
+.badge-gray{background:var(--gray-100);color:var(--gray-600)}
+
+/* CALENDAR */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.cal-nav{display:flex;align-items:center;gap:8px}
+.cal-month{font-size:16px;font-weight:700;min-width:180px;text-align:center}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0;background:var(--white);border-radius:var(--radius);overflow:hidden}
+.cal-day-name{background:var(--gray-50);padding:10px 4px;text-align:center;font-size:11.5px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px}
+.cal-cell{background:#fff;min-height:110px;padding:8px;cursor:pointer;transition:background .1s;position:relative;border:1px solid var(--gray-200)}
+.cal-cell:hover{background:var(--primary-light)}
+.cal-cell.today{background:#f0fdf4;}.cal-cell.today .cal-date{background:var(--primary);color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center}
+.cal-cell.other-month{background:#fafafa}
+.cal-cell.other-month .cal-date{color:var(--gray-300)}
+.cal-date{font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:4px;width:26px;height:26px;display:flex;align-items:center;justify-content:center}
+.cal-shift{font-size:11px;font-weight:600;padding:2px 6px;border-radius:5px;margin-bottom:3px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:opacity .15s}
+.cal-shift:hover{opacity:.8}
+.cal-shift.morning{background:#dbeafe;color:#1e40af}
+.cal-shift.afternoon{background:#fef3c7;color:#92400e}
+.cal-shift.evening{background:#d6e8d3;color:#3a5632}
+.cal-shift.night{background:#1f2937;color:#e5e7eb}
+
+/* FORM */
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:6px}
+.form-control{width:100%;border:1px solid var(--gray-200);border-radius:9px;padding:10px 14px;font-size:13.5px;color:var(--gray-900);outline:none;transition:border .15s;font-family:inherit;background:var(--white)}
+.form-control:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,86,219,0.1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:18px;padding:28px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.modal-title{font-size:18px;font-weight:700}
+.modal-close{width:32px;height:32px;border-radius:8px;border:1px solid var(--gray-200);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gray-500);transition:all .15s}
+.modal-close:hover{background:var(--gray-100);color:var(--gray-900)}
+.modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid var(--gray-200)}
+
+/* TABS */
+.tabs{display:flex;gap:2px;background:var(--gray-100);padding:4px;border-radius:10px;margin-bottom:22px}
+.tab{padding:8px 18px;border-radius:8px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--gray-500);transition:all .15s;border:none;background:none;font-family:inherit}
+.tab.active{background:var(--white);color:var(--gray-900);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+
+/* PROGRESS */
+.progress{height:8px;background:var(--gray-100);border-radius:99px;overflow:hidden}
+.progress-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .4s}
+
+/* TOAST */
+#toast{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:10px}
+.toast-item{background:var(--gray-900);color:#fff;padding:14px 18px;border-radius:11px;font-size:13.5px;font-weight:500;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;animation:slideIn .3s ease;min-width:280px}
+.toast-item.success{border-left:3px solid var(--success)}
+.toast-item.error{border-left:3px solid var(--danger)}
+.toast-item.info{border-left:3px solid var(--primary)}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* CLOCK IN */
+.clockin-card{background:linear-gradient(135deg,#0d1a0e,#1e4020,#2a5a2c);border-radius:20px;padding:36px;text-align:center;color:#fff;margin-bottom:24px}
+.clockin-time{font-size:56px;font-weight:800;letter-spacing:-2px;margin:16px 0}
+.clockin-date{color:rgba(255,255,255,0.5);font-size:14px}
+.clockin-status{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:99px;font-size:14px;font-weight:600;margin:16px 0}
+.clockin-status.active{background:rgba(5,150,105,0.2);color:#34d399;border:1px solid rgba(52,211,153,0.3)}
+.clockin-status.inactive{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1)}
+.clockin-btn{padding:16px 40px;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .2s}
+.clockin-btn.in{background:linear-gradient(135deg,#059669,#10b981);color:#fff}
+.clockin-btn.out{background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff}
+.clockin-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.geo-status{display:flex;align-items:center;gap:8px;font-size:12.5px;justify-content:center;margin-top:12px;color:rgba(255,255,255,0.5)}
+.geo-dot{width:8px;height:8px;border-radius:50%;background:var(--success);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(0.8)}}
+
+/* CHART PLACEHOLDER */
+.chart-area{height:200px;display:flex;align-items:flex-end;gap:6px;padding:10px 0}
+.chart-bar{flex:1;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#4f7344,#6b9e5e);opacity:.85;transition:opacity .2s;cursor:pointer;position:relative}
+.chart-bar:hover{opacity:1}
+.chart-bar-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--gray-500);white-space:nowrap}
+
+/* WORKER CARD */
+.worker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.worker-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:20px;transition:box-shadow .2s;cursor:pointer}
+.worker-card:hover{box-shadow:var(--shadow)}
+.worker-card-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.worker-avatar{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0}
+.worker-name{font-size:14.5px;font-weight:700;color:var(--gray-900)}
+.worker-role{font-size:12px;color:var(--gray-500);margin-top:2px}
+.worker-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;border-top:1px solid var(--gray-100);padding-top:14px}
+.worker-stat-label{font-size:11px;color:var(--gray-400);margin-bottom:2px}
+.worker-stat-value{font-size:14px;font-weight:700;color:var(--gray-800)}
+
+/* NOTIFICATION PANEL */
+.notif-panel{position:absolute;top:48px;right:0;width:320px;background:var(--white);border:1px solid var(--gray-200);border-radius:14px;box-shadow:var(--shadow-lg);z-index:200;overflow:hidden;display:none}
+.notif-panel.open{display:block}
+.notif-header{padding:14px 18px;border-bottom:1px solid var(--gray-200);font-size:14px;font-weight:700}
+.notif-item{padding:12px 18px;border-bottom:1px solid var(--gray-100);cursor:pointer;transition:background .1s;display:flex;gap:10px;align-items:flex-start}
+.notif-item:hover{background:var(--gray-50)}
+.notif-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notif-text{font-size:13px;color:var(--gray-700);line-height:1.5}
+.notif-time{font-size:11px;color:var(--gray-400);margin-top:2px}
+
+/* INTEGRATION CARD */
+.integration-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.integration-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:22px;transition:box-shadow .2s}
+.integration-card:hover{box-shadow:var(--shadow)}
+.integration-logo{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin-bottom:14px}
+.integration-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.integration-desc{font-size:12.5px;color:var(--gray-500);line-height:1.5;margin-bottom:14px}
+.integration-status{display:flex;align-items:center;justify-content:space-between}
+
+/* TOGGLE */
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--gray-300);border-radius:99px;cursor:pointer;transition:.3s}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle input:checked + .toggle-slider{background:var(--success)}
+.toggle input:checked + .toggle-slider:before{transform:translateX(20px)}
+
+/* REPORT */
+.report-header{background:linear-gradient(135deg,#4f7344,#6b9e5e);border-radius:var(--radius);padding:24px;color:#fff;margin-bottom:20px}
+.report-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.report-kpi-item{background:rgba(255,255,255,0.1);border-radius:10px;padding:14px}
+.report-kpi-val{font-size:22px;font-weight:800;margin-bottom:2px}
+.report-kpi-lbl{font-size:12px;opacity:.7}
+
+/* SKELETON */
+.skeleton{background:linear-gradient(90deg,var(--gray-100) 0%,var(--gray-200) 50%,var(--gray-100) 100%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* SEARCH HIGHLIGHT */
+.highlight{background:#fef3c7;border-radius:3px;padding:0 2px}
+
+/* LOCATION MAP */
+.map-placeholder{background:linear-gradient(135deg,#eaf2e8,#d6e8d3);border-radius:12px;height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:16px}
+.map-pin{position:absolute;width:40px;height:40px;background:var(--primary);border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 4px 12px rgba(26,86,219,0.4)}
+.map-pin::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+.map-radius{position:absolute;width:120px;height:120px;border:2px dashed rgba(26,86,219,0.4);border-radius:50%}
+
+/* WHATSAPP */
+.wa-week-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--gray-200);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gray-600);transition:all .15s;font-size:16px;font-weight:700}
+.wa-week-btn:hover{background:var(--gray-100)}
+.wa-week-label{font-size:15px;font-weight:700;min-width:90px;text-align:center;background:var(--gray-900);color:#fff;padding:6px 14px;border-radius:8px}
+.wa-availability{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px 18px;margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-height:48px}
+.wa-avail-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;padding:4px 12px;border-radius:20px}
+.wa-avail-label.available{background:#dcfce7;color:#166534}
+.wa-avail-label.oncall{background:#fef3c7;color:#92400e}
+.wa-chip{font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;background:var(--primary-light);color:var(--primary-dark);cursor:default}
+.wa-divider{width:1px;height:20px;background:var(--gray-200);flex-shrink:0}
+.wa-preview{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);overflow:hidden}
+.wa-preview-header{padding:12px 18px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+.wa-preview-dot{width:8px;height:8px;border-radius:50%;background:var(--success);display:inline-block;margin-right:8px}
+.wa-preview-body{padding:18px;font-family:'Courier New',monospace;font-size:13px;line-height:1.8;white-space:pre-wrap;word-break:break-word;max-height:420px;overflow-y:auto;background:#f9fafb;color:var(--gray-800)}
+.wa-preview-footer{padding:12px 18px;border-top:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+.wa-char-count{font-size:12px;color:var(--gray-400)}
+.wa-textarea{width:100%;border:1px solid var(--gray-200);border-radius:9px;padding:14px;font-size:13px;font-family:'Courier New',monospace;line-height:1.6;resize:vertical;min-height:220px;color:var(--gray-800);outline:none;transition:border .15s}
+.wa-textarea:focus{border-color:var(--primary)}
+.wa-parse-result{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);overflow:hidden;margin-top:16px}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .cal-grid{font-size:11px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 44 44" fill="none">
+        <rect width="44" height="44" rx="11" fill="url(#lg1)"/>
+        <path d="M12 22h8l3-8 4 16 3-10 2 6h4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs><linearGradient id="lg1" x1="0" y1="0" x2="44" y2="44"><stop stop-color="#4f7344"/><stop offset="1" stop-color="#6b9e5e"/></linearGradient></defs>
+      </svg>
+      <div class="login-logo-text">Green<span>Alliance</span></div>
+    </div>
+    <div class="login-subtitle">Workforce Management Platform</div>
+    <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Sign in as</div>
+    <div class="role-selector">
+      <div class="role-btn selected" id="roleAdmin" onclick="selectRole('admin')">
+        <div class="role-btn-icon">🏢</div>
+        <div class="role-btn-label">Admin</div>
+        <div class="role-btn-desc">Manage everything</div>
+      </div>
+      <div class="role-btn" id="roleWorker" onclick="selectRole('worker')">
+        <div class="role-btn-icon">👷</div>
+        <div class="role-btn-label">Worker</div>
+        <div class="role-btn-desc">My shifts & clock in</div>
+      </div>
+    </div>
+    <input class="login-input" type="email" placeholder="admin@greenalliance.dk" value="" id="loginEmail" onkeydown="if(event.key==='Enter')doLogin()">
+    <input class="login-input" type="password" placeholder="Password" value="" id="loginPass" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-hint">Admin: admin@greenalliance.dk · Worker: worker@greenalliance.dk</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appShell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">
+        <svg width="20" height="20" viewBox="0 0 44 44" fill="none">
+          <path d="M12 22h8l3-8 4 16 3-10 2 6h4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="sidebar-logo-text">Green<span>Alliance</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-label">Overview</div>
+        <div class="nav-item active" onclick="showPage('dashboard',this)">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Scheduling</div>
+        <div class="nav-item" onclick="showPage('schedule',this)">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Shift Calendar
+        </div>
+        <div class="nav-item" onclick="showPage('shifts',this)">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Shift List
+          <span class="nav-badge" id="shiftBadge" style="display:none">0</span>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">People</div>
+        <div class="nav-item" onclick="showPage('workers',this)">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Workers
+        </div>
+        <div class="nav-item" onclick="showPage('customers',this)">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+          Customers
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Time & Pay</div>
+        <div class="nav-item" onclick="showPage('clocklog',this)">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+          Clock Log
+        </div>
+        <div class="nav-item" onclick="showPage('timesheets',this)">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Timesheets
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Finance</div>
+        <div class="nav-item" onclick="showPage('invoices',this)">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          Invoice Reports
+        </div>
+        <div class="nav-item" onclick="showPage('salary',this)">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          Salary Reports
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">System</div>
+        <div class="nav-item" onclick="showPage('integrations',this)">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+          Integrations
+        </div>
+        <div class="nav-item" onclick="showPage('settings',this)">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Settings
+        </div>
+        <div class="nav-item" onclick="showPage('whatsapp',this)" style="color:#25d366">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          WhatsApp
+        </div>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user" onclick="doLogout()" title="Sign Out" style="cursor:pointer">
+        <div class="avatar" id="sidebarAvatar">A</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebarName">Admin User</div>
+          <div class="sidebar-user-role" id="sidebarRole">Administrator</div>
+        </div>
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.5)" stroke-width="2" title="Sign Out"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-search">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="#9ca3af" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search workers, shifts…">
+      </div>
+      <div class="topbar-actions">
+        <div style="position:relative">
+          <div class="icon-btn" onclick="toggleNotifPanel()">
+            <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+            <div class="notif-dot"></div>
+          </div>
+          <div class="notif-panel" id="notifPanel">
+            <div class="notif-header">Notifications</div>
+            <div class="notif-item">
+              <div class="notif-icon" style="background:#dbeafe;color:var(--primary)">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+              </div>
+              <div>
+                <div class="notif-text">Ahmed K. clocked in at Nørreport (07:02)</div>
+                <div class="notif-time">2 minutes ago</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-icon" style="background:#fff7ed;color:var(--warning)">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+              <div>
+                <div class="notif-text">3 shifts unassigned for next Monday</div>
+                <div class="notif-time">1 hour ago</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-icon" style="background:#d1fae5;color:var(--success)">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
+              </div>
+              <div>
+                <div class="notif-text">Invoice #2024-089 exported to e-conomic</div>
+                <div class="notif-time">3 hours ago</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-icon" style="background:#d6e8d3;color:var(--accent)">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              </div>
+              <div>
+                <div class="notif-text">Salary data synced to Danløn (14 workers)</div>
+                <div class="notif-time">Yesterday</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="avatar" style="cursor:pointer;width:38px;height:38px;font-size:14px">A</div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <div>
+            <h1>Good morning, Admin 👋</h1>
+            <p>Thursday, 18 June 2026 — Here's your workforce overview</p>
+          </div>
+          <button class="btn btn-primary" onclick="openNewShift()">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Shift
+          </button>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon blue"><svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+            <div class="kpi-value" id="kpiWorkers">0</div>
+            <div class="kpi-label">Total Workers</div>
+            <div class="kpi-change" style="color:var(--gray-400)">Live data</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon green"><svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
+            <div class="kpi-value" id="kpiCustomers">0</div>
+            <div class="kpi-label">Active Customers</div>
+            <div class="kpi-change" style="color:var(--gray-400)">Live data</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon purple"><svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+            <div class="kpi-value" id="kpiShifts">0</div>
+            <div class="kpi-label">Shifts This Week</div>
+            <div class="kpi-change" style="color:var(--gray-400)">Live data</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon orange"><svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+            <div class="kpi-value" id="kpiRevenue">kr 0</div>
+            <div class="kpi-label">Revenue This Month</div>
+            <div class="kpi-change" id="kpiRevenueChange" style="color:var(--gray-400)">No data yet</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:18px">
+          <!-- WEEKLY CHART -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Shift Hours This Week</div>
+              <select class="form-control form-select" style="width:auto;padding:6px 32px 6px 12px;font-size:12px">
+                <option>This Week</option><option>Last Week</option><option>This Month</option>
+              </select>
+            </div>
+            <div class="card-body">
+              <div class="chart-area" id="weekChart"></div>
+              <div style="display:flex;gap:4px;margin-top:24px">
+                <div style="flex:1;text-align:center;font-size:11px;color:var(--gray-500)">Mon</div>
+                <div style="flex:1;text-align:center;font-size:11px;color:var(--gray-500)">Tue</div>
+                <div style="flex:1;text-align:center;font-size:11px;color:var(--gray-500)">Wed</div>
+                <div style="flex:1;text-align:center;font-size:11px;color:var(--gray-500)">Thu</div>
+                <div style="flex:1;text-align:center;font-size:11px;color:var(--gray-500)">Fri</div>
+                <div style="flex:1;text-align:center;font-size:11px;color:var(--gray-500)">Sat</div>
+                <div style="flex:1;text-align:center;font-size:11px;color:var(--gray-500)">Sun</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ACTIVE NOW -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Active Right Now</div>
+              <span class="badge badge-success">● Live</span>
+            </div>
+            <div class="card-body" style="padding:14px">
+              <div style="text-align:center;padding:10px 0 16px">
+                <div style="font-size:44px;font-weight:800;color:var(--success)" id="kpiActive">0</div>
+                <div style="font-size:13px;color:var(--gray-500)">workers clocked in</div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div style="background:var(--gray-50);border-radius:10px;padding:12px;text-align:center">
+                  <div style="font-size:18px;font-weight:700" id="kpiLocations">0</div>
+                  <div style="font-size:11px;color:var(--gray-500)">Locations</div>
+                </div>
+                <div style="background:var(--gray-50);border-radius:10px;padding:12px;text-align:center">
+                  <div style="font-size:18px;font-weight:700" id="kpiOnTime">—</div>
+                  <div style="font-size:11px;color:var(--gray-500)">On Time</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+          <!-- TODAY'S SHIFTS -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Today's Shifts</div>
+              <button class="btn btn-secondary btn-sm" onclick="showPage('schedule',document.querySelector('.nav-item:nth-child(2)'))">View All</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Worker</th><th>Customer</th><th>Time</th><th>Status</th></tr></thead>
+                <tbody id="todayShiftsBody">
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- NEEDS ATTENTION — live -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⚠️ Needs Attention</div>
+            </div>
+            <div class="card-body" id="needsAttentionPanel" style="min-height:80px">
+              <div style="text-align:center;color:var(--gray-400);padding:30px 0;font-size:13px">All good — no issues right now ✅</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHIFT CALENDAR -->
+      <div class="page" id="page-schedule">
+        <div class="page-header">
+          <div><h1>Shift Calendar</h1><p>Create, assign and manage all shifts</p></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-secondary" onclick="toast('Schedule exported as PDF','success')">
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              Export
+            </button>
+            <button class="btn btn-primary" onclick="openNewShift()">
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New Shift
+            </button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px">
+          <div class="card-body" style="padding:16px 20px">
+            <div class="cal-header">
+              <div class="cal-nav">
+                <button class="btn btn-secondary btn-icon" onclick="changeMonth(-1)">
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+                </button>
+                <div class="cal-month" id="calMonth">June 2026</div>
+                <button class="btn btn-secondary btn-icon" onclick="changeMonth(1)">
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+                </button>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-secondary btn-sm" id="viewBtnMonth" onclick="setCalView('month')" style="background:var(--primary);color:#fff">Month</button>
+                <button class="btn btn-secondary btn-sm" id="viewBtnWeek" onclick="setCalView('week')">Week</button>
+                <button class="btn btn-secondary btn-sm" id="viewBtnDay" onclick="setCalView('day')">Day</button>
+              </div>
+            </div>
+            <div class="cal-grid" id="calDayNames">
+              <div class="cal-day-name">Mon</div><div class="cal-day-name">Tue</div><div class="cal-day-name">Wed</div>
+              <div class="cal-day-name">Thu</div><div class="cal-day-name">Fri</div><div class="cal-day-name">Sat</div><div class="cal-day-name">Sun</div>
+            </div>
+            <div class="cal-grid" id="calBody" style="border-top:1px solid var(--gray-200);margin-top:1px"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Upcoming Shifts</div></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Worker</th><th>Customer / Location</th><th>Time</th><th>Hours</th><th>Rate</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="shiftListBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHIFT LIST -->
+      <div class="page" id="page-shifts">
+        <div class="page-header">
+          <div><h1>Shift List</h1><p>Manage all shift assignments</p></div>
+          <button class="btn btn-primary" onclick="openNewShift()">+ New Shift</button>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div style="display:flex;gap:10px;align-items:center">
+              <input class="form-control" style="width:220px" placeholder="Search…" oninput="filterShifts(this.value)">
+              <select class="form-control form-select" style="width:160px">
+                <option>All Statuses</option><option>Assigned</option><option>Unassigned</option><option>Active</option><option>Completed</option>
+              </select>
+              <select class="form-control form-select" style="width:160px">
+                <option>All Customers</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Worker</th><th>Customer</th><th>Location</th><th>Time</th><th>Hours</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="allShiftsList"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKERS -->
+      <div class="page" id="page-workers">
+        <div class="page-header">
+          <div><h1>Workers</h1><p>1,047 registered workers</p></div>
+          <button class="btn btn-primary" onclick="openAddWorker()">+ Add Worker</button>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Worker</th><th>Role</th><th>Email</th><th>Phone</th><th>Rate/hr</th><th>Status</th><th>Login</th><th>Actions</th></tr></thead>
+              <tbody id="workerList"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOMERS -->
+      <div class="page" id="page-customers">
+        <div class="page-header">
+          <div><h1>Customers</h1><p>97 active customer accounts</p></div>
+          <button class="btn btn-primary" onclick="openModal('customerModal')">+ Add Customer</button>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Customer</th><th>Contact</th><th>Location</th><th>Rate/Hr</th><th>Active Workers</th><th>This Month (hrs)</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="customerList"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN CLOCK LOG -->
+      <div class="page" id="page-clocklog">
+        <div class="page-header">
+          <div><h1>Clock Log</h1><p>Monitor and edit all worker clock events</p></div>
+          <div style="display:flex;gap:10px">
+            <input type="date" class="form-control" style="width:160px" value="2026-06-18">
+            <select class="form-control form-select" style="width:200px">
+              <option>All Workers</option>
+              
+            </select>
+            <button class="btn btn-secondary" onclick="toast('Clock log exported','success')">Export CSV</button>
+          </div>
+        </div>
+
+        <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:22px">
+          <div class="kpi-card">
+            <div class="kpi-icon green"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>
+            <div class="kpi-value" id="kpiActive">0</div>
+            <div class="kpi-label">Currently Clocked In</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon blue"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg></div>
+            <div class="kpi-value" id="workerStatOnTime">—</div>
+            <div class="kpi-label">On Time Today</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon orange"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
+            <div class="kpi-value" id="workerStatLate">0</div>
+            <div class="kpi-label">Late / Missing</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon purple"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div class="kpi-value">2</div>
+            <div class="kpi-label">Outside Geofence</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Today's Clock Events</div>
+              <span class="badge badge-success">● Live</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Worker</th><th>Event</th><th>Time</th><th>Location</th><th>GPS Status</th><th>Edit</th></tr></thead>
+                <tbody id="clockLogBody">
+              </tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:16px">
+              <div class="card-header"><div class="card-title">Geofence Locations</div></div>
+              <div class="card-body">
+                <div class="map-placeholder">
+                  <div class="map-radius"></div>
+                  <div class="map-pin"></div>
+                  <div style="position:absolute;top:12px;left:12px;background:rgba(255,255,255,0.9);padding:6px 10px;border-radius:7px;font-size:11px;font-weight:600">📍 100m Radius</div>
+                </div>
+                <div class="form-row" style="margin-bottom:10px">
+                  <div class="form-group" style="margin-bottom:0"><label class="form-label">Location</label><input class="form-control" value="Nørreport Office"></div>
+                  <div class="form-group" style="margin-bottom:0"><label class="form-label">Radius (m)</label><input class="form-control" value="100" type="number"></div>
+                </div>
+                <div class="form-row" style="margin-bottom:12px">
+                  <div class="form-group" style="margin-bottom:0"><label class="form-label">Latitude</label><input class="form-control" value="55.6832"></div>
+                  <div class="form-group" style="margin-bottom:0"><label class="form-label">Longitude</label><input class="form-control" value="12.5713"></div>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="toast('Geofence saved','success')">Save</button>
+                <button class="btn btn-secondary btn-sm" onclick="toast('New location added','success')">+ Add Location</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">Manual Clock Entry</div></div>
+              <div class="card-body">
+                <p style="font-size:12.5px;color:var(--gray-500);margin-bottom:14px">Override or add missing clock events for any worker.</p>
+                <div class="form-group"><label class="form-label">Worker</label>
+                  <select class="form-control form-select" id="editClockWorker"><option value="">— Select Worker —</option></select>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label class="form-label">Type</label>
+                    <select class="form-control form-select"><option>Clock In</option><option>Clock Out</option></select>
+                  </div>
+                  <div class="form-group"><label class="form-label">Time</label><input class="form-control" type="time" value="06:00"></div>
+                </div>
+                <div class="form-group"><label class="form-label">Reason</label><input class="form-control" placeholder="e.g. GPS failure, manager override"></div>
+                <button class="btn btn-primary btn-sm" onclick="toast('Manual entry saved','success')">Save Entry</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIMESHEETS -->
+      <div class="page" id="page-timesheets">
+        <div class="page-header">
+          <div><h1>Timesheets</h1><p>Review and approve working hours</p></div>
+          <div style="display:flex;gap:10px">
+            <input class="form-control" type="week" style="width:200px">
+            <button class="btn btn-secondary" onclick="toast('Timesheet exported','success')">Export CSV</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Worker</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th><th>Total</th><th>Overtime</th><th>Status</th></tr></thead>
+              <tbody id="timesheetBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- INVOICES -->
+      <div class="page" id="page-invoices">
+        <div class="page-header">
+          <div><h1>Invoice Reports</h1><p>Customer billing — export to e-conomic</p></div>
+          <div style="display:flex;gap:10px">
+            <select class="form-control form-select" style="width:180px"><option>June 2026</option><option>May 2026</option><option>April 2026</option></select>
+            <button class="btn btn-success" onclick="toast('Exported to e-conomic ✓','success')">
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              Export to e-conomic
+            </button>
+          </div>
+        </div>
+        <div class="report-header">
+          <div style="font-size:13px;opacity:.7;margin-bottom:4px">June 2026 — Customer Billing Summary</div>
+          <div style="font-size:22px;font-weight:800">Invoice Report</div>
+          <div class="report-kpi">
+            <div class="report-kpi-item"><div class="report-kpi-val">kr 487,240</div><div class="report-kpi-lbl">Total Invoiceable</div></div>
+            <div class="report-kpi-item"><div class="report-kpi-val">5,821 hrs</div><div class="report-kpi-lbl">Total Hours</div></div>
+            <div class="report-kpi-item"><div class="report-kpi-val">97</div><div class="report-kpi-lbl">Customers Billed</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Customer</th><th>Workers Used</th><th>Hours</th><th>Rate/Hr</th><th>Subtotal</th><th>VAT (25%)</th><th>Total</th><th>Invoice #</th><th>Actions</th></tr></thead>
+              <tbody id="invoiceList"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SALARY -->
+      <div class="page" id="page-salary">
+        <div class="page-header">
+          <div><h1>Salary Reports</h1><p>Worker payroll — export to Danløn</p></div>
+          <div style="display:flex;gap:10px">
+            <select class="form-control form-select" style="width:180px"><option>June 2026</option><option>May 2026</option></select>
+            <button class="btn btn-primary" onclick="toast('Exported to Danløn ✓','success')">
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              Export to Danløn
+            </button>
+          </div>
+        </div>
+        <div class="report-header" style="background:linear-gradient(135deg,#059669,#10b981)">
+          <div style="font-size:13px;opacity:.7;margin-bottom:4px">June 2026 — Payroll Summary</div>
+          <div style="font-size:22px;font-weight:800">Salary Report</div>
+          <div class="report-kpi">
+            <div class="report-kpi-item"><div class="report-kpi-val">kr 312,580</div><div class="report-kpi-lbl">Total Gross Salary</div></div>
+            <div class="report-kpi-item"><div class="report-kpi-val">1,047</div><div class="report-kpi-lbl">Workers Paid</div></div>
+            <div class="report-kpi-item"><div class="report-kpi-val">5,821 hrs</div><div class="report-kpi-lbl">Total Hours Worked</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Worker</th><th>Hours</th><th>Rate/Hr</th><th>Gross</th><th>AM-bidrag (8%)</th><th>A-skat</th><th>Net Pay</th><th>Danløn Status</th><th>Actions</th></tr></thead>
+              <tbody id="salaryList"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- INTEGRATIONS -->
+      <div class="page" id="page-integrations">
+        <div class="page-header">
+          <div><h1>Integrations</h1><p>Connect your external services</p></div>
+        </div>
+        <div class="integration-grid">
+          <div class="integration-card">
+            <div class="integration-logo" style="background:#eaf2e8;color:#4f7344;font-size:14px;font-weight:800">DAN</div>
+            <div class="integration-name">Danløn</div>
+            <div class="integration-desc">Sync worker hours and salary data directly to Danløn payroll system. Auto-export on month close.</div>
+            <div class="integration-status">
+              <span class="badge badge-success">● Connected</span>
+              <label class="toggle"><input type="checkbox" checked onchange="toast('Danløn sync '+(this.checked?'enabled':'disabled'),'info')"><div class="toggle-slider"></div></label>
+            </div>
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--gray-100);display:flex;gap:8px">
+              <button class="btn btn-secondary btn-sm" onclick="toast('Testing Danløn connection…','info')">Test Connection</button>
+              <button class="btn btn-secondary btn-sm" onclick="toast('Sync initiated','success')">Sync Now</button>
+            </div>
+          </div>
+          <div class="integration-card">
+            <div class="integration-logo" style="background:#d1fae5;color:#059669;font-size:13px;font-weight:800">ECO</div>
+            <div class="integration-name">e-conomic (Visma)</div>
+            <div class="integration-desc">Export customer invoices automatically. Hours × rate calculated per customer per period.</div>
+            <div class="integration-status">
+              <span class="badge badge-success">● Connected</span>
+              <label class="toggle"><input type="checkbox" checked onchange="toast('e-conomic sync '+(this.checked?'enabled':'disabled'),'info')"><div class="toggle-slider"></div></label>
+            </div>
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--gray-100);display:flex;gap:8px">
+              <button class="btn btn-secondary btn-sm" onclick="toast('Testing e-conomic connection…','info')">Test Connection</button>
+              <button class="btn btn-secondary btn-sm" onclick="toast('Invoices synced','success')">Sync Now</button>
+            </div>
+          </div>
+          <div class="integration-card">
+            <div class="integration-logo" style="background:#fff7ed;color:#d97706">📍</div>
+            <div class="integration-name">Geolocation (GPS)</div>
+            <div class="integration-desc">Browser GPS or device location for clock-in validation. Workers must be within 100m of assigned location.</div>
+            <div class="integration-status">
+              <span class="badge badge-success">● Active</span>
+              <label class="toggle"><input type="checkbox" checked onchange="toast('Geolocation '+(this.checked?'enabled':'disabled'),'info')"><div class="toggle-slider"></div></label>
+            </div>
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--gray-100)">
+              <div style="font-size:12px;color:var(--gray-500)">Accuracy threshold: 50m · Fallback: IP-based</div>
+            </div>
+          </div>
+          <div class="integration-card">
+            <div class="integration-logo" style="background:#d6e8d3;color:var(--accent)">📱</div>
+            <div class="integration-name">SMS Notifications</div>
+            <div class="integration-desc">Send shift reminders, late alerts, and schedule changes via SMS to workers.</div>
+            <div class="integration-status">
+              <span class="badge badge-warning">⚠ Setup Required</span>
+              <label class="toggle"><input type="checkbox" onchange="toast('SMS notifications '+(this.checked?'enabled':'disabled'),'info')"><div class="toggle-slider"></div></label>
+            </div>
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--gray-100)">
+              <button class="btn btn-primary btn-sm" onclick="toast('Opening SMS setup…','info')">Configure</button>
+            </div>
+          </div>
+          <div class="integration-card">
+            <div class="integration-logo" style="background:#fce7f3;color:#be185d">📧</div>
+            <div class="integration-name">Email (SMTP)</div>
+            <div class="integration-desc">Send weekly schedules, shift confirmations, and reports via email to workers and customers.</div>
+            <div class="integration-status">
+              <span class="badge badge-success">● Connected</span>
+              <label class="toggle"><input type="checkbox" checked><div class="toggle-slider"></div></label>
+            </div>
+          </div>
+          <div class="integration-card">
+            <div class="integration-logo" style="background:#f0fdf4;color:#16a34a">🔗</div>
+            <div class="integration-name">REST API / Webhooks</div>
+            <div class="integration-desc">Connect your own systems. Receive real-time webhooks on clock-in, shift changes, and reports.</div>
+            <div class="integration-status">
+              <span class="badge badge-gray">Not Configured</span>
+              <label class="toggle"><input type="checkbox"><div class="toggle-slider"></div></label>
+            </div>
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--gray-100)">
+              <button class="btn btn-secondary btn-sm" onclick="toast('API docs opened','info')">View API Docs</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="page-settings">
+        <div class="page-header">
+          <div><h1>Settings</h1><p>Configure your Green Alliance workspace</p></div>
+          <button class="btn btn-primary" onclick="toast('Settings saved','success')">Save Changes</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Company Settings</div></div>
+            <div class="card-body">
+              <div class="form-group"><label class="form-label">Company Name</label><input class="form-control" value="Green Alliance ApS"></div>
+              <div class="form-group"><label class="form-label">CVR Number</label><input class="form-control" value="DK 12345678"></div>
+              <div class="form-group"><label class="form-label">Default Currency</label><select class="form-control form-select"><option>DKK (kr)</option><option>EUR (€)</option></select></div>
+              <div class="form-group"><label class="form-label">Timezone</label><select class="form-control form-select"><option>Europe/Copenhagen (UTC+2)</option></select></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Shift Defaults</div></div>
+            <div class="card-body">
+              <div class="form-group"><label class="form-label">Default Shift Length (hours)</label><input class="form-control" value="8" type="number"></div>
+              <div class="form-group"><label class="form-label">Break Duration (minutes)</label><input class="form-control" value="30" type="number"></div>
+              <div class="form-group"><label class="form-label">Overtime Threshold (hrs/week)</label><input class="form-control" value="37" type="number"></div>
+              <div class="form-group"><label class="form-label">Geofence Radius (meters)</label><input class="form-control" value="100" type="number"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Danløn Configuration</div></div>
+            <div class="card-body">
+              <div class="form-group"><label class="form-label">API Key</label><input class="form-control" type="password" value="••••••••••••••••"></div>
+              <div class="form-group"><label class="form-label">Company ID</label><input class="form-control" value="DL-48291"></div>
+              <div class="form-group"><label class="form-label">Auto-sync on month close</label>
+                <label class="toggle" style="margin-top:6px"><input type="checkbox" checked><div class="toggle-slider"></div></label>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">e-conomic Configuration</div></div>
+            <div class="card-body">
+              <div class="form-group"><label class="form-label">Agreement Grant Token</label><input class="form-control" type="password" value="••••••••••••••••"></div>
+              <div class="form-group"><label class="form-label">App Secret Token</label><input class="form-control" type="password" value="••••••••••••••••"></div>
+              <div class="form-group"><label class="form-label">Default Layout Number</label><input class="form-control" value="19"></div>
+            </div>
+          </div>
+          <div class="card" style="grid-column:1/-1;border:1px solid #fecaca">
+            <div class="card-header" style="background:#fef2f2"><div class="card-title" style="color:#dc2626">⚠️ Danger Zone</div></div>
+            <div class="card-body" style="display:flex;align-items:center;justify-content:space-between;gap:20px">
+              <div>
+                <div style="font-weight:600;margin-bottom:4px">Reset All Data</div>
+                <div style="font-size:13px;color:var(--gray-500)">Clears all workers, customers, shifts and clock logs. Cannot be undone. Use this to fix a bad WhatsApp import.</div>
+              </div>
+              <button class="btn btn-danger" style="white-space:nowrap" onclick="resetAllData()">🗑 Reset All Data</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHATSAPP -->
+      <div class="page" id="page-whatsapp">
+        <div class="page-header">
+          <div>
+            <h1>WhatsApp Schedule</h1>
+            <p>Export schedule · Import from message</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="wa-week-btn" onclick="waChangeWeek(-1)">&#8249;</button>
+              <div class="wa-week-label" id="waWeekLabel">Week —</div>
+              <button class="wa-week-btn" onclick="waChangeWeek(1)">&#8250;</button>
+            </div>
+            <button class="btn btn-primary" onclick="waCopyMessage()" id="waCopyBtn">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy message
+            </button>
+          </div>
+        </div>
+
+        <div class="tabs" style="width:fit-content">
+          <button class="tab active" id="waTabExport" onclick="waTab('export')">📤 Export</button>
+          <button class="tab" id="waTabImport" onclick="waTab('import')">📥 Import</button>
+        </div>
+
+        <!-- EXPORT PANEL -->
+        <div id="waExportPanel">
+          <div class="wa-availability" id="waAvailability">
+            <span style="color:var(--gray-400);font-size:13px">Loading workers…</span>
+          </div>
+          <div class="wa-preview">
+            <div class="wa-preview-header">
+              <div><span class="wa-preview-dot"></span><strong style="font-size:13px" id="waPreviewTitle">Message preview</strong></div>
+              <span style="font-size:12px;color:var(--gray-400)" id="waPreviewCount">0 assignments · 0 locations</span>
+            </div>
+            <div class="wa-preview-body" id="waPreviewBody">Loading…</div>
+            <div class="wa-preview-footer">
+              <span class="wa-char-count" id="waCharCount">0 characters</span>
+              <button class="btn btn-primary btn-sm" onclick="waCopyMessage()">
+                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy message
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- IMPORT PANEL -->
+        <div id="waImportPanel" style="display:none">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Paste WhatsApp Schedule Message</div>
+            </div>
+            <div class="card-body">
+              <p style="font-size:13px;color:var(--gray-500);margin-bottom:14px">Copy your weekly WhatsApp schedule message and paste it below. The system will extract workers, customers, and shift assignments automatically. New workers and customers will be created if they don't already exist.</p>
+              <textarea class="wa-textarea" id="waImportText" placeholder="Paste your WhatsApp message here…&#10;&#10;Example:&#10;Week 25 / 2026  (15 June 2026 - 21 June 2026)&#10;&#10;*1. SFG Niras*&#10;1. Suhana Niraula  Tuesday  10:50-13:50&#10;2. Ahmed K  Monday  06:00-14:00"></textarea>
+              <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <button class="btn btn-primary" onclick="waParseImport()">🔍 Parse Message</button>
+                <button class="btn btn-secondary" onclick="el('waImportText').value='';el('waParseResult').innerHTML='';el('waImportHint').textContent=''">Clear</button>
+                <span style="font-size:12.5px;color:var(--primary);font-weight:600" id="waImportHint"></span>
+              </div>
+            </div>
+          </div>
+          <div id="waParseResult"></div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div><!-- /appShell -->
+
+<!-- WORKER PORTAL -->
+<div id="workerPortal">
+  <header class="worker-portal-header">
+    <div class="worker-portal-logo">
+      <div style="width:30px;height:30px;background:linear-gradient(135deg,#4f7344,#6b9e5e);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-right:2px">
+        <svg width="16" height="16" viewBox="0 0 44 44" fill="none"><path d="M12 22h8l3-8 4 16 3-10 2 6h4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="worker-portal-logo-text">Green<span>Alliance</span></div>
+    </div>
+    <div class="worker-portal-user">
+      <div style="text-align:right">
+        <div style="color:#fff;font-weight:600;font-size:13px" id="workerName"></div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4)" id="workerSubtitle">Worker Portal</div>
+      </div>
+      <div class="avatar" style="width:34px;height:34px;font-size:13px" id="workerInitials">AK</div>
+      <button onclick="workerLogout()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);border-radius:7px;padding:6px 12px;cursor:pointer;font-size:12px;font-family:inherit">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="worker-portal-content">
+
+    <!-- CLOCK IN CARD -->
+    <div class="worker-clockin-wrap">
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Today's Shift</div>
+      <div class="worker-shift-info">
+        <div class="worker-shift-label">Assigned Shift</div>
+        <div class="worker-shift-val" id="workerNextShiftVal">No upcoming shifts</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px">Morning · 07:00 – 15:00 · 8 hours</div>
+      </div>
+      <div class="worker-clock-time" id="workerClockTime">07:14:22</div>
+      <div class="worker-clock-date" id="workerClockDate">Thursday, 18 June 2026</div>
+      <div style="margin-top:18px">
+        <div class="clockin-status inactive" id="workerClockStatus" style="display:inline-flex"><span>●</span> Not Clocked In</div>
+      </div>
+      <div style="margin:16px 0">
+        <button class="clockin-btn in" id="workerClockBtn" onclick="workerToggleClock()">Clock In</button>
+      </div>
+      <div class="geo-status" id="workerGeoStatus">
+        <div class="geo-dot" style="background:var(--gray-400)"></div>
+        Checking your location…
+      </div>
+    </div>
+
+    <!-- WORKER TABS -->
+    <div class="worker-tabs">
+      <button class="worker-tab active" onclick="showWorkerTab('myShifts',this)">My Shifts</button>
+      <button class="worker-tab" onclick="showWorkerTab('myTime',this)">My Time Log</button>
+      <button class="worker-tab" onclick="showWorkerTab('mySalary',this)">My Pay</button>
+    </div>
+
+    <!-- MY SHIFTS -->
+    <div class="worker-page active" id="wtab-myShifts">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Upcoming Shifts</div>
+          <span class="badge badge-blue">Next 14 days</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Customer / Location</th><th>Time</th><th>Hours</th><th>Status</th></tr></thead>
+            <tbody id="myShiftsTbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY TIME LOG -->
+    <div class="worker-page" id="wtab-myTime">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">This Week's Time Log</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Break</th><th>Total</th><th>GPS Verified</th></tr></thead>
+            <tbody id="myTimelogTbody">
+              <tr style="background:#f0fdf4">
+                <td><strong>Thu 18 Jun</strong></td>
+                <td>07:02</td>
+                <td>— (active)</td>
+                <td>—</td>
+                <td style="color:var(--success);font-weight:700">Active</td>
+                <td>✅ In zone</td>
+              </tr>
+              <tr>
+                <td>Wed 17 Jun</td>
+                <td>07:00</td>
+                <td>15:03</td>
+                <td>30 min</td>
+                <td><strong>7h 33m</strong></td>
+                <td>✅ In zone</td>
+              </tr>
+              <tr>
+                <td>Tue 16 Jun</td>
+                <td>06:58</td>
+                <td>15:01</td>
+                <td>30 min</td>
+                <td><strong>7h 33m</strong></td>
+                <td>✅ In zone</td>
+              </tr>
+              <tr>
+                <td>Mon 15 Jun</td>
+                <td>07:03</td>
+                <td>15:00</td>
+                <td>30 min</td>
+                <td><strong>7h 27m</strong></td>
+                <td>✅ In zone</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding:14px 20px;border-top:1px solid var(--gray-100);display:flex;gap:20px">
+          <div><div style="font-size:11px;color:var(--gray-400)">This Week</div><div style="font-size:16px;font-weight:700">22h 33m</div></div>
+          <div><div style="font-size:11px;color:var(--gray-400)">Expected</div><div style="font-size:16px;font-weight:700">37h</div></div>
+          <div><div style="font-size:11px;color:var(--gray-400)">Remaining</div><div style="font-size:16px;font-weight:700;color:var(--primary)">14h 27m</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY SALARY -->
+    <div class="worker-page" id="wtab-mySalary">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">My Pay</div>
+        </div>
+        <div class="card-body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;text-align:center;gap:12px">
+          <div style="font-size:40px">💼</div>
+          <div style="font-weight:700;font-size:16px;color:var(--dark)">Salary is processed via Danløn</div>
+          <div style="font-size:14px;color:var(--gray-500);max-width:320px">Your payslips, deductions, and payment history are available directly in Danløn. Contact your manager if you have questions about your pay.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- EDIT CLOCK MODAL -->
+<div class="modal-overlay" id="editClockModal">
+  <div class="modal" style="width:400px">
+    <div class="modal-header">
+      <div class="modal-title">Edit Clock Event</div>
+      <button class="modal-close" onclick="closeModal('editClockModal')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Worker</label><input class="form-control" id="editClockWorker" readonly style="background:var(--gray-50)"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Event Type</label>
+        <select class="form-control form-select"><option>Clock In</option><option>Clock Out</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Corrected Time</label><input class="form-control" type="time" id="editClockTime"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Reason for Edit</label><input class="form-control" placeholder="e.g. GPS outage, manual correction"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('editClockModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveClockEdit()">Save Override</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+
+<!-- DAY DETAIL MODAL -->
+<div class="modal-overlay" id="dayDetailModal">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-header">
+      <div class="modal-title" id="dayDetailTitle">Shifts</div>
+      <button class="modal-close" onclick="closeModal('dayDetailModal')">✕</button>
+    </div>
+    <div id="dayDetailBody" style="padding:0 24px 4px;max-height:360px;overflow-y:auto"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('dayDetailModal')">Close</button>
+      <button class="btn btn-primary" id="dayDetailAddBtn">+ Add Shift</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="shiftModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="shiftModalTitle">Create New Shift</div>
+      <button class="modal-close" onclick="closeModal('shiftModal')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Customer</label>
+        <select id="sfCustomer" class="form-control form-select"></select>
+      </div>
+      <div class="form-group"><label class="form-label">Worker</label>
+        <select id="sfWorker" class="form-control form-select"><option value="">— Select Worker —</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Date</label><input id="sfDate" class="form-control" type="date"></div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select id="sfStatus" class="form-control form-select"><option value="scheduled">Scheduled</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Start Time</label><input id="sfStart" class="form-control" type="time" value="07:00"></div>
+      <div class="form-group"><label class="form-label">End Time</label><input id="sfEnd" class="form-control" type="time" value="15:00"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Notes</label><textarea id="sfNotes" class="form-control" rows="2" placeholder="Special instructions…"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('shiftModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveShift()">Save Shift</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="workerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="workerModalTitle">Add New Worker</div>
+      <button class="modal-close" onclick="closeModal('workerModal')">✕</button>
+    </div>
+    <input type="hidden" id="workerEditId">
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Full Name</label><input id="wfName" class="form-control" placeholder="Ahmed Khalid"></div>
+      <div class="form-group"><label class="form-label">Phone</label><input id="wfPhone" class="form-control" placeholder="+45 12 34 56 78"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Email</label><input id="wfEmail" class="form-control" type="email" placeholder="ahmed@example.dk"></div>
+      <div class="form-group"><label class="form-label">Hourly Rate (kr)</label><input id="wfRate" class="form-control" value="145" type="number" min="0"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Role / Job Title</label>
+        <input class="form-control" id="wfRole" list="rolesList" placeholder="e.g. Cleaner, Supervisor…" autocomplete="off">
+        <datalist id="rolesList">
+          <option value="Cleaner">
+          <option value="Deep Cleaner">
+          <option value="Kitchen Assistant">
+          <option value="Kitchen Cleaner">
+          <option value="Office Cleaner">
+          <option value="Supervisor">
+          <option value="Guard">
+          <option value="Driver">
+          <option value="Facilities Manager">
+        </datalist>
+      </div>
+      <div class="form-group"><label class="form-label">Default Customer</label>
+        <select id="wfCustomer" class="form-control form-select"><option value="">— No default —</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('workerModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveWorker()">Save Worker</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="customerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add New Customer</div>
+      <button class="modal-close" onclick="closeModal('customerModal')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Company Name</label><input class="form-control" placeholder="Customer company name"></div>
+      <div class="form-group"><label class="form-label">CVR Number</label><input class="form-control" placeholder="DK 12345678"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Contact Person</label><input class="form-control" placeholder="Jens Hansen"></div>
+      <div class="form-group"><label class="form-label">Contact Email</label><input class="form-control" type="email"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Phone</label><input class="form-control" placeholder="+45 12 34 56 78"></div>
+      <div class="form-group"><label class="form-label">Hourly Rate (kr)</label><input class="form-control" value="185" type="number"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Address / Location</label><input class="form-control" placeholder="Nørreport 12, 1165 København K"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Latitude</label><input class="form-control" placeholder="55.6832" type="number" step="any"></div>
+      <div class="form-group"><label class="form-label">Longitude</label><input class="form-control" placeholder="12.5713" type="number" step="any"></div>
+    </div>
+    <div class="form-group"><label class="form-label">e-conomic Customer #</label><input class="form-control" placeholder="1234"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('customerModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="addCustomer()">Add Customer</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+
+<!-- CREDENTIALS MODAL -->
+<div class="modal-overlay" id="credentialsModal">
+  <div class="modal" style="width:440px">
+    <div class="modal-header">
+      <div class="modal-title">🔑 Worker Login Credentials</div>
+      <button class="modal-close" onclick="closeModal('credentialsModal')">✕</button>
+    </div>
+    <div style="padding:20px">
+      <div style="background:var(--primary-light);border:1px solid var(--primary);border-radius:10px;padding:16px;margin-bottom:16px">
+        <div style="font-size:12px;color:var(--gray-500);margin-bottom:4px">Worker</div>
+        <div style="font-weight:700;font-size:15px" id="credWorkerName">—</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div style="background:var(--gray-50);border-radius:10px;padding:14px">
+          <div style="font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Email (Login)</div>
+          <div style="font-weight:600;font-size:13px;word-break:break-all" id="credEmail">—</div>
+        </div>
+        <div style="background:var(--gray-50);border-radius:10px;padding:14px">
+          <div style="font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Auto Password</div>
+          <div style="font-weight:600;font-size:16px;letter-spacing:2px;color:var(--primary)" id="credPassword">—</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--gray-400);background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px;margin-bottom:16px">
+        ⚠️ This password will be saved once you click "Confirm &amp; Save". The email button will open your email client pre-filled.
+      </div>
+      <input type="hidden" id="credWorkerId">
+      <input type="hidden" id="credPasswordStore">
+    </div>
+    <div class="modal-footer" style="gap:8px">
+      <button class="btn btn-secondary" onclick="copyCredentials()">📋 Copy</button>
+      <a id="credMailtoBtn" href="#" class="btn btn-secondary" onclick="void(0)" style="text-decoration:none">✉️ Open Email</a>
+      <button class="btn btn-primary" onclick="confirmSendCredentials()">✅ Confirm &amp; Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========================================================
+//  GREEN ALLIANCE — WORKFORCE MANAGEMENT PLATFORM
+//  Full functional JS — localStorage persistence
+// ========================================================
+
+// ===== DB LAYER =====
+const DB = {
+  _k: k => 'ga_' + k,
+  get(k)  { try { return JSON.parse(localStorage.getItem(this._k(k))); } catch { return null; } },
+  set(k,v){ localStorage.setItem(this._k(k), JSON.stringify(v)); },
+  del(k)  { localStorage.removeItem(this._k(k)); },
+  getArr(k){ return this.get(k) || []; },
+  push(k,item){ const a=this.getArr(k); a.push(item); this.set(k,a); },
+  update(k,id,patch){
+    const a=this.getArr(k); const i=a.findIndex(x=>x.id===id);
+    if(i>-1){a[i]={...a[i],...patch}; this.set(k,a);}
+  },
+  remove(k,id){ this.set(k,this.getArr(k).filter(x=>x.id!==id)); },
+  init(){
+    if(this.get('seeded')) return;
+    this.set('users',[
+      {id:'u0',name:'Admin',email:'admin@greenalliance.dk',password:'Admin123!',role:'admin'}
+    ]);
+    this.set('customers',[]);
+    this.set('workers',[]);
+    this.set('shifts',[]);
+    this.set('clocklogs',[]);
+    this.set('seeded',true);
+  }
+};
+
+// ===== SESSION =====
+function getSession(){ return DB.get('session'); }
+function setSession(s){ DB.set('session',s); }
+function clearSession(){ DB.del('session'); }
+
+// ===== UTILS =====
+function genId(){ return Math.random().toString(36).slice(2,10); }
+function genPassword(){
+  const w=['Clean','Green','Work','Safe','Fast','Star'];
+  return w[Math.floor(Math.random()*w.length)]+Math.floor(100+Math.random()*900)+['!','@','#'][Math.floor(Math.random()*3)];
+}
+function initials(n){ return (n||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+function avatarColor(n){
+  const c=['#4f7344','#6b9e5e','#059669','#0891b2','#7c3aed','#d97706','#dc2626'];
+  let h=0; for(const ch of (n||''))h=(h*31+ch.charCodeAt(0))&0xffffffff;
+  return c[Math.abs(h)%c.length];
+}
+function fmtTime(d){ return new Date(d).toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit'}); }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function el(id){ return document.getElementById(id); }
+function setText(id,v){ const e=el(id); if(e)e.textContent=v; }
+
+// ===== TOAST =====
+function toast(msg,type='info'){
+  const icon={success:'✅',error:'❌',info:'ℹ️',warning:'⚠️'}[type]||'ℹ️';
+  const d=document.createElement('div');
+  d.className=`toast-item ${type}`;
+  d.textContent=icon+' '+msg;
+  el('toast').appendChild(d);
+  setTimeout(()=>d.remove(),3500);
+}
+
+// ===== MODALS =====
+function openModal(id){ el(id)?.classList.add('open'); }
+function closeModal(id){ el(id)?.classList.remove('open'); }
+
+// ===== AUTH =====
+let selectedRole='admin';
+
+function selectRole(role){
+  selectedRole=role;
+  el('roleAdmin')?.classList.toggle('selected',role==='admin');
+  el('roleWorker')?.classList.toggle('selected',role==='worker');
+  const em=el('loginEmail');
+  if(em) em.placeholder=role==='admin'?'admin@greenalliance.dk':'your.email@example.com';
+}
+
+function doLogin(){
+  const email=(el('loginEmail')?.value||'').trim().toLowerCase();
+  const pass=el('loginPass')?.value||'';
+  if(!email||!pass){toast('Enter email and password','error');return;}
+  const user=DB.getArr('users').find(u=>u.email.toLowerCase()===email&&u.password===pass);
+  if(!user){toast('Invalid email or password','error');return;}
+  if(user.role!==selectedRole){toast(`This is a ${user.role} account — please select the correct role`,'error');return;}
+  setSession({userId:user.id,role:user.role,name:user.name,workerId:user.workerId||null,email:user.email});
+  el('loginScreen').classList.add('hidden');
+  if(user.role==='worker'){
+    el('workerPortal').classList.add('active');
+    initWorkerPortal();
+    toast(`Welcome, ${user.name}!`,'success');
+  } else {
+    el('appShell').classList.add('active');
+    initAdminApp();
+    toast(`Welcome back, ${user.name}!`,'success');
+  }
+}
+
+function doLogout(){
+  clearSession();
+  el('appShell')?.classList.remove('active');
+  el('workerPortal')?.classList.remove('active');
+  el('loginScreen')?.classList.remove('hidden');
+  if(el('loginEmail')) el('loginEmail').value='';
+  if(el('loginPass')) el('loginPass').value='';
+  selectRole('admin');
+}
+
+// ===== NAVIGATION =====
+function showPage(pageId,navEl){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  el('page-'+pageId)?.classList.add('active');
+  if(navEl) navEl.classList.add('active');
+  setText('topbarTitle',{dashboard:'Dashboard',schedule:'Shift Calendar',shifts:'Shift List',workers:'Workers',customers:'Customers',clocklog:'Clock Log',timesheets:'Timesheets',invoices:'Invoice Reports',salary:'Salary Reports',integrations:'Integrations',settings:'Settings',whatsapp:'WhatsApp Schedule'}[pageId]||pageId);
+  const rfn={workers:renderWorkers,customers:renderCustomers,shifts:renderShiftList,schedule:renderSchedule,clocklog:renderClockLog,timesheets:renderTimesheets,salary:renderSalary,invoices:renderInvoices,whatsapp:renderWhatsApp};
+  rfn[pageId]?.();
+}
+
+// ===== ADMIN INIT =====
+function initAdminApp(){
+  const s=getSession();
+  if(!s)return;
+  setText('topbarTitle','Dashboard');
+  // Update sidebar user
+  document.querySelectorAll('.sidebar-user-name').forEach(e=>e.textContent=s.name);
+  document.querySelectorAll('.sidebar-user-role').forEach(e=>e.textContent='Administrator');
+  document.querySelectorAll('.sidebar-user .avatar').forEach(e=>e.textContent=initials(s.name));
+  document.querySelectorAll('.topbar-actions .avatar').forEach(e=>e.textContent=initials(s.name));
+  renderDashboard();
+  renderWorkers();
+  renderCustomers();
+  renderShiftList();
+  renderSchedule();
+  renderClockLog();
+  renderTimesheets();
+  renderSalary();
+  renderInvoices();
+  renderWhatsApp();
+  populateShiftWorkerSelect();
+  populateShiftCustomerSelect();
+  setInterval(()=>{
+    const now=new Date();
+    const ce=el('adminLiveClock');
+    if(ce)ce.textContent=now.toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  },1000);
+}
+
+// ===== DASHBOARD =====
+function renderDashboard(){
+  const workers=DB.getArr('workers'), customers=DB.getArr('customers');
+  const shifts=DB.getArr('shifts'), logs=DB.getArr('clocklogs');
+  setText('kpiWorkers',workers.length);
+  setText('kpiCustomers',customers.length);
+  setText('kpiShifts',shifts.filter(s=>s.date>=todayStr()).length);
+  // Active now
+  const activeLogs=logs.filter(l=>!l.clockOut);
+  setText('kpiActive',activeLogs.length);
+  // Locations (unique customer sites with active workers)
+  const activeCustomers=new Set(activeLogs.map(l=>l.customerId).filter(Boolean));
+  setText('kpiLocations',activeCustomers.size||activeLogs.length);
+  // Revenue: sum all invoiced shifts
+  const revenue=customers.reduce((sum,c)=>{
+    const wids=[...new Set(shifts.filter(s=>s.customerId===c.id).map(s=>s.workerId))];
+    let hrs=0; wids.forEach(wid=>hrs+=logs.filter(l=>l.workerId===wid&&l.clockIn&&l.clockOut).reduce((s,l)=>s+(l.clockOut-l.clockIn)/3600000,0));
+    return sum+hrs*c.rate;
+  },0);
+  setText('kpiRevenue','kr '+Math.round(revenue).toLocaleString('da-DK'));
+  setText('kpiOnTime',activeLogs.length?'100%':'—');
+  // Shift badge
+  const upcoming=shifts.filter(s=>s.date>=todayStr()).length;
+  const badge=el('shiftBadge'); if(badge){badge.textContent=upcoming;badge.style.display=upcoming?'inline':'none';}
+  // Needs attention
+  renderNeedsAttention(shifts,logs,workers);
+  // Today's shifts
+  const tbody=el('todayShiftsBody');
+  if(tbody){
+    const ts=shifts.filter(s=>s.date===todayStr());
+    if(!ts.length){
+      tbody.innerHTML=`<tr><td colspan="4" style="text-align:center;color:var(--gray-400);padding:20px">No shifts today</td></tr>`;
+    } else {
+      tbody.innerHTML=ts.map(s=>{
+        const act=logs.find(l=>l.workerId===s.workerId&&!l.clockOut);
+        return `<tr><td><div style="font-weight:600">${s.workerName||'—'}</div></td><td>${s.customerName||'—'}</td><td>${s.startTime}–${s.endTime}</td><td><span class="badge ${act?'badge-success':'badge-gray'}">${act?'Active':'Scheduled'}</span></td></tr>`;
+      }).join('');
+    }
+  }
+  renderWeekChart();
+}
+
+function renderNeedsAttention(shifts,logs,workers){
+  const panel=el('needsAttentionPanel'); if(!panel)return;
+  const today=todayStr();
+  // Unassigned shifts today
+  const unassigned=shifts.filter(s=>s.date===today&&!s.workerId);
+  // Workers who should be clocked in but aren't (have a shift today, started, not clocked in)
+  const now=new Date(); const nowMin=now.getHours()*60+now.getMinutes();
+  const late=shifts.filter(s=>s.date===today&&s.workerId).filter(s=>{
+    const [h,m]=s.startTime.split(':').map(Number);
+    return (h*60+m)<nowMin-15 && !logs.find(l=>l.workerId===s.workerId&&!l.clockOut);
+  });
+  if(!unassigned.length&&!late.length){
+    panel.innerHTML='<div style="text-align:center;color:var(--gray-400);padding:30px 0;font-size:13px">All good — no issues right now ✅</div>';
+    return;
+  }
+  let html='';
+  if(unassigned.length){
+    html+=`<div style="font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:8px">Unassigned Shifts (${unassigned.length})</div>`;
+    unassigned.slice(0,3).forEach(s=>{
+      html+=`<div style="background:var(--gray-50);border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:13px">${s.date} · ${s.startTime}–${s.endTime}</div>
+        <button class="btn btn-secondary btn-sm" onclick="openNewShift()">Assign</button></div>`;
+    });
+  }
+  if(late.length){
+    html+=`<div style="font-size:13px;font-weight:600;color:var(--gray-700);margin:${unassigned.length?'12px':0} 0 8px">Late Clock-Ins (${late.length})</div>`;
+    late.slice(0,3).forEach(s=>{
+      const w=workers.find(x=>x.id===s.workerId);
+      html+=`<div style="display:flex;align-items:center;gap:10px;padding:10px;background:#fff7ed;border-radius:10px;margin-bottom:6px">
+        <div class="avatar" style="background:var(--warning);width:32px;height:32px;font-size:12px">${initials(w?.name||'?')}</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">${w?.name||'Unknown'}</div><div style="font-size:11px;color:var(--warning)">Expected ${s.startTime} · Not clocked in</div></div>
+      </div>`;
+    });
+  }
+  panel.innerHTML=html;
+}
+
+function renderWeekChart(){
+  const chart=el('weekChart'); if(!chart)return;
+  const logs=DB.getArr('clocklogs');
+  const today=new Date();
+  const data=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(today); d.setDate(today.getDate()-today.getDay()+1+i);
+    const ds=d.toISOString().slice(0,10);
+    const hrs=logs.filter(l=>l.date===ds&&l.clockIn&&l.clockOut).reduce((s,l)=>s+(l.clockOut-l.clockIn)/3600000,0);
+    data.push(Math.round(hrs));
+  }
+  const max=Math.max(...data,1);
+  chart.innerHTML=data.map((v,i)=>{
+    const pct=Math.max(4,Math.round((v/max)*100));
+    const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    return `<div class="chart-bar" style="height:${pct}%;opacity:${v>0?0.9:0.25}" title="${days[i]}: ${v}h"><div class="chart-bar-label">${days[i]}</div></div>`;
+  }).join('');
+}
+
+// ===== WORKERS =====
+function renderWorkers(){
+  const workers=DB.getArr('workers').sort((a,b)=>a.name.localeCompare(b.name));
+  const users=DB.getArr('users'), logs=DB.getArr('clocklogs');
+  const tbody=el('workerList');
+  if(!tbody)return;
+  if(!workers.length){
+    tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gray-400)">No workers yet. Click "+ Add Worker" to register your first worker.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML=workers.map(w=>{
+    const hasLogin=users.some(u=>u.workerId===w.id);
+    const active=logs.find(l=>l.workerId===w.id&&!l.clockOut);
+    const loginCell=hasLogin
+      ?`<span class="badge badge-success">✓ Set</span>`
+      :`<button class="btn btn-sm btn-secondary" onclick="openSendCredentials('${w.id}')">📧 Send</button>`;
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:8px">
+        <div style="width:32px;height:32px;border-radius:50%;background:${avatarColor(w.name)};display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0">${initials(w.name)}</div>
+        <div style="font-weight:600">${w.name}${active?` <span class="badge badge-success" style="font-size:10px">● Live</span>`:''}</div>
+      </div></td>
+      <td>${w.role||'—'}</td>
+      <td style="font-size:13px">${w.email||'—'}</td>
+      <td>${w.phone||'—'}</td>
+      <td>kr ${w.hourlyRate||w.rate||0}/hr</td>
+      <td><span class="badge ${w.status==='active'?'badge-success':'badge-gray'}">${w.status||'active'}</span></td>
+      <td>${loginCell}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-sm btn-secondary" onclick="openEditWorker('${w.id}')">Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteWorker('${w.id}')">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function populateWorkerModalCustomers(){
+  const sc=el('wfCustomer'); if(!sc)return;
+  sc.innerHTML='<option value="">— No default —</option>'+DB.getArr('customers').map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+}
+
+function openAddWorker(){
+  el('workerModalTitle').textContent='Add Worker';
+  el('workerEditId').value='';
+  if(el('wfName'))el('wfName').value='';
+  if(el('wfEmail'))el('wfEmail').value='';
+  if(el('wfPhone'))el('wfPhone').value='';
+  if(el('wfRole'))el('wfRole').value='Cleaner';
+  if(el('wfRate'))el('wfRate').value='145';
+  populateWorkerModalCustomers();
+  if(el('wfCustomer'))el('wfCustomer').value='';
+  openModal('workerModal');
+}
+
+function openEditWorker(id){
+  const w=DB.getArr('workers').find(x=>x.id===id); if(!w)return;
+  el('workerModalTitle').textContent='Edit Worker';
+  el('workerEditId').value=id;
+  if(el('wfName'))el('wfName').value=w.name||'';
+  if(el('wfEmail'))el('wfEmail').value=w.email||'';
+  if(el('wfPhone'))el('wfPhone').value=w.phone||'';
+  if(el('wfRole'))el('wfRole').value=w.role||'Cleaner';
+  if(el('wfRate'))el('wfRate').value=w.hourlyRate||w.rate||145;
+  populateWorkerModalCustomers();
+  if(el('wfCustomer'))el('wfCustomer').value=w.defaultCustomer||'';
+  openModal('workerModal');
+}
+
+function saveWorker(){
+  const id=el('workerEditId')?.value||'';
+  const name=(el('wfName')?.value||'').trim();
+  const email=(el('wfEmail')?.value||'').trim().toLowerCase();
+  if(!name){toast('Name required','error');return;}
+  if(!email){toast('Email required','error');return;}
+  const data={name,email,phone:el('wfPhone')?.value||'',role:el('wfRole')?.value||'Cleaner',hourlyRate:parseInt(el('wfRate')?.value)||145,defaultCustomer:el('wfCustomer')?.value||'',status:'active'};
+  if(id){ DB.update('workers',id,data); toast(`${name} updated`,'success'); }
+  else {
+    if(DB.getArr('workers').find(w=>w.email===email)){toast('Email already exists','error');return;}
+    DB.push('workers',{id:genId(),...data,createdAt:Date.now()});
+    toast(`${name} added — send login details next`,'success');
+  }
+  closeModal('workerModal'); renderWorkers(); populateShiftWorkerSelect();
+}
+
+function deleteWorker(id){
+  const w=DB.getArr('workers').find(x=>x.id===id);
+  if(!confirm(`Delete ${w?.name}? This cannot be undone.`))return;
+  DB.remove('workers',id);
+  DB.set('users',DB.getArr('users').filter(u=>u.workerId!==id));
+  toast(`${w?.name} deleted`,'info'); renderWorkers();
+}
+
+// ===== CREDENTIALS =====
+function openSendCredentials(workerId){
+  const w=DB.getArr('workers').find(x=>x.id===workerId); if(!w)return;
+  const pwd=genPassword();
+  setText('credWorkerName',w.name);
+  setText('credEmail',w.email);
+  setText('credPassword',pwd);
+  if(el('credWorkerId')) el('credWorkerId').value=workerId;
+  if(el('credPasswordStore')) el('credPasswordStore').value=pwd;
+  const sub=encodeURIComponent('Green Alliance — Your Login Details');
+  const body=encodeURIComponent(`Hej ${w.name},\n\nWelcome to Green Alliance Workforce Platform.\n\nLogin details:\nEmail: ${w.email}\nPassword: ${pwd}\n\nLogin at: [Your platform URL]\n\nChange your password after first login.\n\nBest regards,\nGreen Alliance Management`);
+  const a=el('credMailtoBtn'); if(a)a.href=`mailto:${w.email}?subject=${sub}&body=${body}`;
+  openModal('credentialsModal');
+}
+
+function confirmSendCredentials(){
+  const wid=el('credWorkerId')?.value; const pwd=el('credPasswordStore')?.value;
+  const w=DB.getArr('workers').find(x=>x.id===wid); if(!w||!pwd)return;
+  const users=DB.getArr('users');
+  const i=users.findIndex(u=>u.workerId===wid);
+  if(i>-1){users[i].password=pwd; DB.set('users',users);}
+  else DB.push('users',{id:genId(),name:w.name,email:w.email,password:pwd,role:'worker',workerId:wid});
+  toast(`Login saved for ${w.name} — email your client to send it`,'success');
+  closeModal('credentialsModal'); renderWorkers();
+}
+
+function copyCredentials(){
+  const text=`Worker: ${el('credWorkerName')?.textContent}\nEmail: ${el('credEmail')?.textContent}\nPassword: ${el('credPassword')?.textContent}`;
+  navigator.clipboard.writeText(text).then(()=>toast('Copied!','success'));
+}
+
+// ===== CUSTOMERS =====
+function renderCustomers(){
+  const customers=DB.getArr('customers');
+  const tbody=el('customerList'); if(!tbody)return;
+  if(!customers.length){tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gray-400)">No customers yet.</td></tr>`;return;}
+  tbody.innerHTML=customers.map(c=>`<tr>
+    <td><div style="font-weight:600">${c.name}</div></td>
+    <td>${c.contact||'—'}</td>
+    <td>${c.address||'—'}</td>
+    <td>kr ${c.rate}/hr</td>
+    <td>—</td><td>—</td>
+    <td><span class="badge ${c.status==='active'?'badge-success':'badge-gray'}">${c.status}</span></td>
+    <td style="display:flex;gap:6px">
+      <button class="btn btn-sm btn-secondary" onclick="openEditCustomer('${c.id}')">Edit</button>
+      <button class="btn btn-sm btn-danger" onclick="deleteCustomer('${c.id}')">✕</button>
+    </td>
+  </tr>`).join('');
+}
+
+function openAddCustomer(){ el('customerModalTitle').textContent='Add Customer'; el('customerForm').reset(); el('customerEditId').value=''; openModal('customerModal'); }
+
+function openEditCustomer(id){
+  const c=DB.getArr('customers').find(x=>x.id===id); if(!c)return;
+  el('customerModalTitle').textContent='Edit Customer'; el('customerEditId').value=id;
+  ['cfName','cfContact','cfEmail','cfPhone','cfAddress','cfRate'].forEach(f=>{
+    const map={cfName:'name',cfContact:'contact',cfEmail:'email',cfPhone:'phone',cfAddress:'address',cfRate:'rate'};
+    const e=el(f); if(e)e.value=c[map[f]]||'';
+  });
+  openModal('customerModal');
+}
+
+function saveCustomer(){
+  const id=el('customerEditId')?.value||'';
+  const name=(el('cfName')?.value||'').trim();
+  if(!name){toast('Name required','error');return;}
+  const data={name,contact:el('cfContact')?.value||'',email:el('cfEmail')?.value||'',phone:el('cfPhone')?.value||'',address:el('cfAddress')?.value||'',rate:parseInt(el('cfRate')?.value)||350,status:'active'};
+  if(id){DB.update('customers',id,data);toast(`${name} updated`,'success');}
+  else{DB.push('customers',{id:genId(),...data,createdAt:Date.now()});toast(`${name} added`,'success');}
+  closeModal('customerModal'); renderCustomers(); populateShiftCustomerSelect();
+}
+
+function deleteCustomer(id){
+  const c=DB.getArr('customers').find(x=>x.id===id);
+  if(!confirm(`Delete ${c?.name}?`))return;
+  DB.remove('customers',id); toast(`${c?.name} deleted`,'info'); renderCustomers();
+}
+
+// ===== SHIFTS =====
+let editingShiftId=null;
+
+function populateShiftSelects(){
+  const sw=el('sfWorker'); if(sw)sw.innerHTML='<option value="">— Select Worker —</option>'+DB.getArr('workers').map(w=>`<option value="${w.id}">${w.name} (${w.role||'Cleaner'})</option>`).join('');
+  const sc=el('sfCustomer'); if(sc)sc.innerHTML='<option value="">— Select Customer —</option>'+DB.getArr('customers').map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+}
+function populateShiftWorkerSelect(){ populateShiftSelects(); }
+function populateShiftCustomerSelect(){ populateShiftSelects(); }
+
+function openNewShift(){
+  editingShiftId=null;
+  populateShiftSelects();
+  const t=el('shiftModalTitle'); if(t)t.textContent='Create New Shift';
+  const btn=document.querySelector('#shiftModal .btn-primary'); if(btn)btn.textContent='Create Shift';
+  if(el('sfWorker'))el('sfWorker').value='';
+  if(el('sfCustomer'))el('sfCustomer').value='';
+  if(el('sfDate'))el('sfDate').value=todayStr();
+  if(el('sfStart'))el('sfStart').value='07:00';
+  if(el('sfEnd'))el('sfEnd').value='15:00';
+  if(el('sfStatus'))el('sfStatus').value='scheduled';
+  if(el('sfNotes'))el('sfNotes').value='';
+  openModal('shiftModal');
+}
+
+function openEditShift(id){
+  const s=DB.getArr('shifts').find(x=>x.id===id); if(!s)return;
+  editingShiftId=id;
+  populateShiftSelects();
+  const t=el('shiftModalTitle'); if(t)t.textContent='Edit Shift';
+  const btn=document.querySelector('#shiftModal .btn-primary'); if(btn)btn.textContent='Update Shift';
+  if(el('sfWorker'))el('sfWorker').value=s.workerId||'';
+  if(el('sfCustomer'))el('sfCustomer').value=s.customerId||'';
+  if(el('sfDate'))el('sfDate').value=s.date||'';
+  if(el('sfStart'))el('sfStart').value=s.startTime||'';
+  if(el('sfEnd'))el('sfEnd').value=s.endTime||'';
+  if(el('sfStatus'))el('sfStatus').value=s.status||'scheduled';
+  if(el('sfNotes'))el('sfNotes').value=s.notes||'';
+  openModal('shiftModal');
+}
+
+function saveShift(){
+  const wid=el('sfWorker')?.value, cid=el('sfCustomer')?.value;
+  const date=el('sfDate')?.value, st=el('sfStart')?.value, en=el('sfEnd')?.value;
+  if(!wid){toast('Select a worker','error');return;}
+  if(!cid){toast('Select a customer','error');return;}
+  if(!date||!st||!en){toast('Fill in date and time','error');return;}
+  const w=DB.getArr('workers').find(x=>x.id===wid);
+  const c=DB.getArr('customers').find(x=>x.id===cid);
+  const status=el('sfStatus')?.value||'scheduled';
+  const notes=el('sfNotes')?.value||'';
+  if(editingShiftId){
+    DB.update('shifts',editingShiftId,{workerId:wid,workerName:w?.name,customerId:cid,customerName:c?.name,date,startTime:st,endTime:en,status,notes});
+    toast(`Shift updated for ${w?.name} on ${date}`,'success');
+    editingShiftId=null;
+  } else {
+    DB.push('shifts',{id:genId(),workerId:wid,workerName:w?.name,customerId:cid,customerName:c?.name,date,startTime:st,endTime:en,status,notes,createdAt:Date.now()});
+    toast(`Shift created for ${w?.name} on ${date}`,'success');
+  }
+  closeModal('shiftModal'); renderShiftList(); renderSchedule();
+}
+function createShift(){ openNewShift(); }
+
+function renderShiftList(){
+  const tbody=el('shiftListBody'); if(!tbody)return;
+  const shifts=DB.getArr('shifts').sort((a,b)=>a.date.localeCompare(b.date));
+  const workers=DB.getArr('workers');
+  if(!shifts.length){tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gray-400)">No shifts yet. Click "New Shift" to create one.</td></tr>`;return;}
+  tbody.innerHTML=shifts.map(s=>{
+    const t1=new Date(`${s.date}T${s.startTime}`), t2=new Date(`${s.date}T${s.endTime}`);
+    let diffMs=t2-t1; if(diffMs<0)diffMs+=86400000; // handle overnight
+    const hrs=(diffMs/3600000).toFixed(1);
+    const w=workers.find(x=>x.id===s.workerId);
+    const rate=w?(w.hourlyRate||w.rate||0):0;
+    const isToday=s.date===todayStr();
+    const statusClass=s.status==='completed'?'badge-success':s.status==='cancelled'?'badge-danger':'badge-gray';
+    return `<tr>
+      <td>${s.date}${isToday?' <span class="badge badge-success" style="font-size:10px">Today</span>':''}</td>
+      <td><div style="font-weight:600">${s.workerName||'—'}</div></td>
+      <td>${s.customerName||'—'}</td>
+      <td>${s.startTime||'—'}–${s.endTime||'—'}</td>
+      <td>${hrs}h</td>
+      <td>kr ${rate}/hr</td>
+      <td><span class="badge ${statusClass}">${s.status||'scheduled'}</span></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-sm btn-secondary" onclick="openEditShift('${s.id}')">Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteShift('${s.id}')">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function deleteShift(id){DB.remove('shifts',id);toast('Shift removed','info');renderShiftList();renderSchedule();}
+
+// ===== CALENDAR =====
+let calYear=new Date().getFullYear(), calMonth=new Date().getMonth();
+let calView='month';
+let calWeekStart=(()=>{const d=new Date(),day=d.getDay(),w=new Date(d);w.setDate(d.getDate()-(day===0?6:day-1));w.setHours(0,0,0,0);return w;})();
+let calDayDate=(()=>{const d=new Date();d.setHours(0,0,0,0);return d;})();
+const CAL_MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const CAL_WDAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+function setCalView(v){
+  calView=v;
+  ['Month','Week','Day'].forEach(x=>{
+    const b=el('viewBtn'+x);
+    if(!b)return;
+    if(x.toLowerCase()===v){b.style.background='var(--primary)';b.style.color='#fff';}
+    else{b.style.background='';b.style.color='';}
+  });
+  const dn=el('calDayNames');
+  if(dn)dn.style.display=v==='day'?'none':'';
+  renderSchedule();
+}
+
+function renderSchedule(){
+  const cb=el('calBody'); if(!cb)return;
+  if(calView==='week') renderWeekCal(cb);
+  else if(calView==='day') renderDayCal(cb);
+  else renderMonthCal(cb);
+}
+
+function renderMonthCal(cb){
+  setText('calMonth',CAL_MONTHS[calMonth]+' '+calYear);
+  const first=new Date(calYear,calMonth,1), last=new Date(calYear,calMonth+1,0);
+  let dow=first.getDay(); dow=dow===0?6:dow-1;
+  const shifts=DB.getArr('shifts'), today=new Date();
+  let html='';
+  for(let i=0;i<dow;i++) html+=`<div class="cal-cell other-month"><div class="cal-date"></div></div>`;
+  for(let d=1;d<=last.getDate();d++){
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=today.getFullYear()===calYear&&today.getMonth()===calMonth&&today.getDate()===d;
+    const ds2=shifts.filter(s=>s.date===ds);
+    const sc=ds2.slice(0,3).map(s=>`<div class="cal-shift morning" title="${s.workerName||''}">${s.startTime||''} ${(s.workerName||'?').split(' ')[0]}</div>`).join('');
+    const more=ds2.length>3?`<div style="font-size:10px;color:var(--gray-400)">+${ds2.length-3} more</div>`:'';
+    html+=`<div class="cal-cell${isToday?' today':''}" onclick="openDayDetail('${ds}')"><div class="cal-date">${d}</div>${sc}${more}</div>`;
+  }
+  const used=dow+last.getDate(), trail=(7-used%7)%7;
+  for(let i=0;i<trail;i++) html+=`<div class="cal-cell other-month"><div class="cal-date"></div></div>`;
+  cb.innerHTML=html;
+}
+
+function renderWeekCal(cb){
+  const ws=new Date(calWeekStart);
+  const we=new Date(ws); we.setDate(ws.getDate()+6);
+  const label=(ws.getMonth()===we.getMonth()
+    ?CAL_MONTHS[ws.getMonth()]+' '+ws.getDate()+'–'+we.getDate()+', '+ws.getFullYear()
+    :CAL_MONTHS[ws.getMonth()]+' '+ws.getDate()+' – '+CAL_MONTHS[we.getMonth()]+' '+we.getDate()+', '+ws.getFullYear());
+  setText('calMonth',label);
+  const shifts=DB.getArr('shifts'), today=new Date();
+  const dnames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  let html='';
+  for(let i=0;i<7;i++){
+    const d=new Date(ws); d.setDate(ws.getDate()+i);
+    const ds=d.toISOString().slice(0,10);
+    const isToday=d.toDateString()===today.toDateString();
+    const dayShifts=shifts.filter(s=>s.date===ds);
+    const sc=dayShifts.slice(0,4).map(s=>`<div class="cal-shift morning" onclick="event.stopPropagation();openDayDetail('${ds}')" title="${s.workerName||''}">${s.startTime||''} ${(s.workerName||'?').split(' ')[0]}</div>`).join('');
+    const more=dayShifts.length>4?`<div style="font-size:10px;color:var(--gray-400)">+${dayShifts.length-4} more</div>`:'';
+    html+=`<div class="cal-cell${isToday?' today':''}" style="min-height:90px" onclick="openDayDetail('${ds}')">
+      <div class="cal-date" style="display:flex;flex-direction:column;align-items:center;gap:1px;padding-bottom:4px">
+        <span style="font-size:10px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px">${dnames[i]}</span>
+        <span style="font-size:16px;font-weight:700;color:${isToday?'var(--primary)':'var(--gray-800)'}">${d.getDate()}</span>
+      </div>
+      ${sc}${more}
+      ${dayShifts.length===0?`<div style="font-size:11px;color:var(--gray-300);padding:2px 0">No shifts</div>`:''}
+    </div>`;
+  }
+  cb.innerHTML=html;
+}
+
+function renderDayCal(cb){
+  const ds=calDayDate.toISOString().slice(0,10);
+  setText('calMonth',`${CAL_WDAYS[calDayDate.getDay()]}, ${CAL_MONTHS[calDayDate.getMonth()]} ${calDayDate.getDate()}, ${calDayDate.getFullYear()}`);
+  const shifts=DB.getArr('shifts').filter(s=>s.date===ds).sort((a,b)=>(a.startTime||'').localeCompare(b.startTime||''));
+  if(!shifts.length){
+    cb.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--gray-400)">
+      <div style="font-size:32px;margin-bottom:12px">📅</div>
+      <div style="margin-bottom:16px">No shifts scheduled for this day.</div>
+      <button class="btn btn-primary btn-sm" onclick="openNewShift();setTimeout(()=>{if(el('sfDate'))el('sfDate').value='${ds}';},40)">+ Add Shift</button>
+    </div>`;
+    return;
+  }
+  const rows=shifts.map(s=>{
+    const hrs=shiftHours(s);
+    const sc=s.status==='completed'?'badge-success':s.status==='cancelled'?'badge-danger':'badge-gray';
+    return `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--gray-100)">
+      <div style="width:36px;height:36px;border-radius:50%;background:${avatarColor(s.workerName||'?')};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0">${initials(s.workerName||'?')}</div>
+      <div style="flex:1">
+        <div style="font-weight:600">${s.workerName||'Unassigned'}</div>
+        <div style="font-size:12px;color:var(--gray-500)">${s.customerName||'—'}</div>
+      </div>
+      <div style="text-align:right;min-width:90px">
+        <div style="font-weight:600">${s.startTime||'?'}–${s.endTime||'?'}</div>
+        <div style="font-size:12px;color:var(--gray-500)">${hrs.toFixed(1)}h</div>
+      </div>
+      <span class="badge ${sc}" style="min-width:72px;text-align:center">${s.status||'scheduled'}</span>
+      <button class="btn btn-sm btn-secondary" onclick="openEditShift('${s.id}')">Edit</button>
+    </div>`;
+  }).join('');
+  cb.innerHTML=`<div style="grid-column:1/-1">
+    ${rows}
+    <div style="padding:12px 16px">
+      <button class="btn btn-primary btn-sm" onclick="openNewShift();setTimeout(()=>{if(el('sfDate'))el('sfDate').value='${ds}';},40)">+ Add Shift for this Day</button>
+    </div>
+  </div>`;
+}
+
+function changeMonth(dir){
+  if(calView==='week'){const w=new Date(calWeekStart);w.setDate(w.getDate()+dir*7);calWeekStart=w;}
+  else if(calView==='day'){const d=new Date(calDayDate);d.setDate(d.getDate()+dir);calDayDate=d;}
+  else{calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}}
+  renderSchedule();
+}
+
+function openDayDetail(ds){
+  const d=new Date(ds+'T00:00:00');
+  setText('dayDetailTitle',CAL_WDAYS[d.getDay()]+', '+CAL_MONTHS[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear());
+  const shifts=DB.getArr('shifts').filter(s=>s.date===ds).sort((a,b)=>(a.startTime||'').localeCompare(b.startTime||''));
+  const body=el('dayDetailBody');
+  const addBtn=el('dayDetailAddBtn');
+  if(addBtn) addBtn.onclick=()=>{closeModal('dayDetailModal');openNewShift();setTimeout(()=>{if(el('sfDate'))el('sfDate').value=ds;},40);};
+  if(!shifts.length){
+    body.innerHTML=`<div style="text-align:center;padding:32px;color:var(--gray-400)">No shifts scheduled for this day.</div>`;
+  } else {
+    body.innerHTML=shifts.map(s=>{
+      const hrs=shiftHours(s);
+      const sc=s.status==='completed'?'badge-success':s.status==='cancelled'?'badge-danger':'badge-gray';
+      return `<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--gray-100)">
+        <div style="width:36px;height:36px;border-radius:50%;background:${avatarColor(s.workerName||'?')};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0">${initials(s.workerName||'?')}</div>
+        <div style="flex:1">
+          <div style="font-weight:600">${s.workerName||'Unassigned'}</div>
+          <div style="font-size:12px;color:var(--gray-500)">${s.customerName||'—'}</div>
+        </div>
+        <div style="text-align:right;min-width:90px">
+          <div style="font-weight:600">${s.startTime||'?'}–${s.endTime||'?'}</div>
+          <div style="font-size:12px;color:var(--gray-500)">${hrs.toFixed(1)}h</div>
+        </div>
+        <span class="badge ${sc}" style="min-width:72px;text-align:center">${s.status||'scheduled'}</span>
+        <button class="btn btn-sm btn-secondary" onclick="closeModal('dayDetailModal');openEditShift('${s.id}')">Edit</button>
+      </div>`;
+    }).join('');
+  }
+  openModal('dayDetailModal');
+}
+
+function openShiftOnDay(ds){openNewShift();if(el('sfDate'))el('sfDate').value=ds;}
+
+// ===== CLOCK LOG =====
+function renderClockLog(){
+  const tbody=el('clockLogBody'); if(!tbody)return;
+  const logs=DB.getArr('clocklogs').sort((a,b)=>b.clockIn-a.clockIn).slice(0,50);
+  const workers=DB.getArr('workers');
+  if(!logs.length){tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--gray-400)">No clock events yet.</td></tr>`;return;}
+  tbody.innerHTML=logs.map(l=>{
+    const w=workers.find(x=>x.id===l.workerId);
+    const ci=l.clockIn?new Date(l.clockIn):null, co=l.clockOut?new Date(l.clockOut):null;
+    const hrs=(ci&&co)?((co-ci)/3600000).toFixed(2)+'h':co?'—':'<span style="color:var(--success)">Active</span>';
+    return `<tr>
+      <td><div style="font-weight:600">${w?.name||'Unknown'}</div></td>
+      <td>${ci?'Clock In':''} ${l.date||''}</td>
+      <td>${ci?fmtTime(ci):'—'}</td>
+      <td>${l.address||'—'}</td>
+      <td>${l.gpsVerified?'✅ Verified':'⚠️ Manual'}</td>
+      <td>${!co?`<button class="btn btn-sm btn-danger" onclick="adminForceOut('${l.id}')">Force Out</button>`:''}</td>
+    </tr>`;
+  }).join('');
+}
+function adminForceOut(id){
+  const a=DB.getArr('clocklogs'),i=a.findIndex(l=>l.id===id);
+  if(i>-1){a[i].clockOut=Date.now();DB.set('clocklogs',a);}
+  toast('Worker clocked out','info');renderClockLog();
+}
+
+// ===== TIMESHEETS =====
+function renderTimesheets(){
+  const tbody=el('timesheetBody'); if(!tbody)return;
+  const workers=DB.getArr('workers'), logs=DB.getArr('clocklogs');
+  if(!workers.length){tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--gray-400)">No workers registered yet.</td></tr>`;return;}
+  const ws=new Date(); ws.setDate(ws.getDate()-ws.getDay()+1); ws.setHours(0,0,0,0);
+  tbody.innerHTML=workers.map(w=>{
+    const wl=logs.filter(l=>l.workerId===w.id&&new Date(l.clockIn)>=ws);
+    let total=0;
+    const days=Array.from({length:7},(_,i)=>{
+      const d=new Date(ws); d.setDate(ws.getDate()+i);
+      const ds=d.toISOString().slice(0,10);
+      const dl=wl.find(l=>l.date===ds);
+      if(dl&&dl.clockOut){const h=(dl.clockOut-dl.clockIn)/3600000;total+=h;return`<td>${h.toFixed(1)}h</td>`;}
+      if(dl&&dl.clockIn) return`<td style="color:var(--success)">Active</td>`;
+      return`<td style="color:var(--gray-300)">—</td>`;
+    });
+    return`<tr><td><div style="font-weight:600">${w.name}</div></td>${days.join('')}<td><strong>${total.toFixed(1)}h</strong></td><td style="color:${total>37?'var(--danger)':'inherit'}">${total>37?(total-37).toFixed(1)+'h OT':'—'}</td><td><span class="badge badge-warning">Pending</span></td></tr>`;
+  }).join('');
+}
+
+// ===== HELPERS =====
+function shiftHours(s){
+  if(!s.date||!s.startTime||!s.endTime)return 0;
+  const t1=new Date(`${s.date}T${s.startTime}`), t2=new Date(`${s.date}T${s.endTime}`);
+  let d=t2-t1; if(d<0)d+=86400000; return d/3600000;
+}
+
+// ===== SALARY =====
+function renderSalary(){
+  const tbody=el('salaryList'); if(!tbody)return;
+  const workers=DB.getArr('workers'), logs=DB.getArr('clocklogs'), shifts=DB.getArr('shifts');
+  if(!workers.length){tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--gray-400)">No workers registered yet.</td></tr>`;return;}
+  tbody.innerHTML=workers.map(w=>{
+    const wl=logs.filter(l=>l.workerId===w.id&&l.clockIn&&l.clockOut);
+    let hrs=wl.reduce((s,l)=>s+(l.clockOut-l.clockIn)/3600000,0);
+    // Fall back to scheduled shift hours when no clock data
+    if(hrs===0) hrs=shifts.filter(s=>s.workerId===w.id).reduce((s,sh)=>s+shiftHours(sh),0);
+    const wrate=w.hourlyRate||w.rate||0;
+    const gross=hrs*wrate, am=gross*0.08, aInc=(gross-am)*0.38, net=gross-am-aInc;
+    const src=wl.length?'clock':'shifts';
+    return`<tr>
+      <td><div style="font-weight:600">${w.name}</div><div style="font-size:12px;color:var(--gray-400)">${w.role}</div></td>
+      <td>${hrs.toFixed(1)}h <span style="font-size:10px;color:var(--gray-400)">(${src})</span></td><td>kr ${wrate}/hr</td>
+      <td>kr ${gross.toFixed(0)}</td>
+      <td style="color:var(--danger)">−kr ${am.toFixed(0)}</td>
+      <td style="color:var(--danger)">−kr ${aInc.toFixed(0)}</td>
+      <td><strong style="color:var(--success)">kr ${net.toFixed(0)}</strong></td>
+      <td><span class="badge badge-warning">Pending</span></td>
+      <td><button class="btn btn-sm btn-primary" onclick="toast('${w.name} synced to Danløn','success')">→ Danløn</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ===== INVOICES =====
+function renderInvoices(){
+  const tbody=el('invoiceList'); if(!tbody)return;
+  const customers=DB.getArr('customers'), shifts=DB.getArr('shifts'), logs=DB.getArr('clocklogs');
+  if(!customers.length){tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--gray-400)">No customers yet.</td></tr>`;return;}
+  tbody.innerHTML=customers.filter(c=>c.status==='active').map(c=>{
+    const cShifts=shifts.filter(s=>s.customerId===c.id);
+    // Try clock-log hours first; fall back to scheduled shift hours
+    const wids=[...new Set(cShifts.map(s=>s.workerId))];
+    let hrs=wids.reduce((sum,wid)=>sum+logs.filter(l=>l.workerId===wid&&l.clockIn&&l.clockOut).reduce((s,l)=>s+(l.clockOut-l.clockIn)/3600000,0),0);
+    if(hrs===0) hrs=cShifts.reduce((s,sh)=>s+shiftHours(sh),0);
+    const crate=c.rate||0;
+    const sub=hrs*crate, vat=sub*.25, total=sub+vat;
+    const month=new Date().toLocaleString('en',{month:'short',year:'numeric'});
+    return`<tr>
+      <td><div style="font-weight:600">${c.name}</div></td>
+      <td>${month}</td><td>${hrs.toFixed(1)}h</td><td>kr ${crate}/hr</td>
+      <td>kr ${sub.toFixed(0)}</td><td>kr ${vat.toFixed(0)}</td>
+      <td><strong>kr ${total.toFixed(0)}</strong></td>
+      <td><span class="badge badge-warning">Draft</span></td>
+      <td><button class="btn btn-sm btn-primary" onclick="toast('Sent to e-conomic','success')">→ e-conomic</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ===== WHATSAPP =====
+let waCurrentWeek = null;
+
+function getISOWeek(date){
+  const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+  const day=d.getUTCDay()||7; d.setUTCDate(d.getUTCDate()+4-day);
+  const y0=new Date(Date.UTC(d.getUTCFullYear(),0,1));
+  return Math.ceil((((d-y0)/86400000)+1)/7);
+}
+
+function getWeekMonday(year,week){
+  const jan4=new Date(Date.UTC(year,0,4));
+  const w1mon=new Date(jan4); w1mon.setUTCDate(jan4.getUTCDate()-((jan4.getUTCDay()||7)-1));
+  const mon=new Date(w1mon); mon.setUTCDate(w1mon.getUTCDate()+(week-1)*7);
+  return mon;
+}
+
+function waIso(d){ return d.toISOString().slice(0,10); }
+
+function waDateLabel(d){
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
+}
+
+function waDayName(dateStr){
+  return new Date(dateStr+'T00:00:00Z').toLocaleDateString('en-GB',{weekday:'long',timeZone:'UTC'});
+}
+
+function waChangeWeek(delta){
+  if(!waCurrentWeek)return;
+  let {year,week}=waCurrentWeek;
+  week+=delta;
+  if(week<1){year--;week=getISOWeek(new Date(Date.UTC(year,11,28)));}
+  else if(week>52){const dec28=new Date(Date.UTC(year,11,28));if(week>getISOWeek(dec28)){year++;week=1;}}
+  waCurrentWeek={year,week};
+  renderWhatsApp();
+}
+
+function waTab(tab){
+  const ex=tab==='export';
+  el('waTabExport')?.classList.toggle('active',ex);
+  el('waTabImport')?.classList.toggle('active',!ex);
+  const ep=el('waExportPanel'),ip=el('waImportPanel'),cb=el('waCopyBtn');
+  if(ep)ep.style.display=ex?'':'none';
+  if(ip)ip.style.display=ex?'none':'';
+  if(cb)cb.style.display=ex?'':'none';
+}
+
+function renderWhatsApp(){
+  if(!waCurrentWeek){const now=new Date();waCurrentWeek={year:now.getFullYear(),week:getISOWeek(now)};}
+  const {year,week}=waCurrentWeek;
+  const mon=getWeekMonday(year,week);
+  const sun=new Date(mon);sun.setUTCDate(mon.getUTCDate()+6);
+  const wkStart=waIso(mon),wkEnd=waIso(sun);
+
+  setText('waWeekLabel','Week '+week);
+  setText('waPreviewTitle','Message preview — week '+week+' / '+year);
+
+  const shifts=DB.getArr('shifts').filter(s=>s.date>=wkStart&&s.date<=wkEnd);
+  const workers=DB.getArr('workers');
+  const assignedIds=new Set(shifts.filter(s=>s.workerId).map(s=>s.workerId));
+
+  const availEl=el('waAvailability');
+  if(availEl){
+    const chips=workers.map(w=>'<span class="wa-chip">'+w.name+'</span>').join('');
+    availEl.innerHTML='<span class="wa-avail-label available">🟢 AVAILABLE ('+workers.length+')</span>'
+      +(chips||'<span style="font-size:12px;color:var(--gray-400)">No workers yet</span>')
+      +'<div class="wa-divider"></div>'
+      +'<span style="font-size:12px;color:var(--gray-500)"><strong>ASSIGNED</strong> '+assignedIds.size+' worker'+(assignedIds.size===1?'':'s')+' this week</span>';
+  }
+
+  const msg=buildWhatsAppMsg(year,week,mon,sun,shifts);
+  const pb=el('waPreviewBody');
+  if(pb)pb.textContent=msg||'No shifts scheduled for this week.';
+  setText('waCharCount',msg.length+' characters');
+  const locs=new Set(shifts.filter(s=>s.customerId).map(s=>s.customerId)).size;
+  setText('waPreviewCount',shifts.length+' assignment'+(shifts.length===1?'':'s')+' · '+locs+' location'+(locs===1?'':'s'));
+}
+
+function buildWhatsAppMsg(year,week,mon,sun,shifts){
+  const workerMap=Object.fromEntries(DB.getArr('workers').map(w=>[w.id,w]));
+  const customers=DB.getArr('customers');
+  let msg='Week '+week+' / '+year+'  ('+waDateLabel(mon)+' - '+waDateLabel(sun)+')\n';
+  const onCallIds=[...new Set(shifts.filter(s=>s.workerId).map(s=>s.workerId))];
+  const onCallNames=onCallIds.map(id=>workerMap[id]?.name).filter(Boolean);
+  if(onCallNames.length){
+    msg+='\nOn call:\n';
+    onCallNames.forEach(function(n,i){msg+=(i+1)+'. '+n+'\n';});
+  }
+  const byCustomer={};
+  shifts.forEach(s=>{const k=s.customerId||'__none__';if(!byCustomer[k])byCustomer[k]=[];byCustomer[k].push(s);});
+  const custOrder=customers.map(c=>c.id).filter(id=>byCustomer[id]);
+  if(byCustomer['__none__'])custOrder.push('__none__');
+  if(custOrder.length){
+    msg+='\n---\n';
+    custOrder.forEach(function(cid,ci){
+      const cshifts=byCustomer[cid].sort((a,b)=>a.date.localeCompare(b.date));
+      const cust=customers.find(c=>c.id===cid);
+      const cName=cust?cust.name:'Unassigned';
+      msg+='\n*'+(ci+1)+'. '+cName+'*\n';
+      cshifts.forEach(function(s,si){
+        const wName=s.workerId?(workerMap[s.workerId]?.name||s.workerName||'TBD'):(s.workerName||'ABC');
+        msg+=(si+1)+'. '+wName+'  '+waDayName(s.date)+'  '+s.startTime+'-'+s.endTime+'\n';
+      });
+    });
+  }
+  return msg.trim();
+}
+
+function waCopyMessage(){
+  const pb=el('waPreviewBody');
+  if(!pb)return;
+  const text=pb.textContent;
+  if(!text){toast('No message to copy','error');return;}
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(function(){toast('Copied to clipboard! 📋','success');}).catch(function(){fallbackCopy(text);});
+  } else { fallbackCopy(text); }
+}
+function fallbackCopy(text){
+  const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('Copied! 📋','success');
+}
+
+function waParseImport(){
+  const text=(el('waImportText')?.value||'').trim();
+  if(!text){toast('Paste a WhatsApp message first','error');return;}
+  const parsed=parseWhatsAppSchedule(text);
+  renderWaParseResult(parsed);
+}
+
+function parseWhatsAppSchedule(text){
+  const dayMap={monday:0,tuesday:1,wednesday:2,thursday:3,friday:4,saturday:5,sunday:6,
+    mandag:0,tirsdag:1,onsdag:2,torsdag:3,fredag:4,lordag:5,sondag:6,
+    mon:0,tue:1,wed:2,thu:3,fri:4,sat:5,sun:6};
+  const monthNums={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12,
+    januar:1,februar:2,marts:3,april:4,maj:5,juni:6,juli:7,august:8,september:9,oktober:10,november:11,december:12};
+
+  let weekYear=new Date().getFullYear(), weekNum=getISOWeek(new Date());
+  const wm=text.match(/(?:week|uge)\s+(\d+)\s*[\/\-]\s*(\d{4})/i)||text.match(/(?:week|uge)\s+(\d+)/i);
+  if(wm){weekNum=parseInt(wm[1]);if(wm[2])weekYear=parseInt(wm[2]);}
+  const mon=getWeekMonday(weekYear,weekNum);
+
+  function dayToDate(offset){const d=new Date(mon);d.setUTCDate(mon.getUTCDate()+offset);return waIso(d);}
+
+  function parseDateToken(str){
+    str=(str||'').trim().toLowerCase();
+    if(/^\d{4}-\d{2}-\d{2}$/.test(str))return str;
+    const dl=str.replace(/[^a-z]/g,'');
+    if(dayMap[dl]!==undefined)return dayToDate(dayMap[dl]);
+    const dm=str.match(/(\d{1,2})(?:st|nd|rd|th)?\s*([a-z]+)/);
+    if(dm){const mn=monthNums[dm[2].slice(0,3)]||monthNums[dm[2]];if(mn)return weekYear+'-'+String(mn).padStart(2,'0')+'-'+String(parseInt(dm[1])).padStart(2,'0');}
+    const slashM=str.match(/(\d{1,2})[\/\.](\d{1,2})/);
+    if(slashM)return weekYear+'-'+String(parseInt(slashM[2])).padStart(2,'0')+'-'+String(parseInt(slashM[1])).padStart(2,'0');
+    return dayToDate(0);
+  }
+
+  function parseTime(str){
+    const m=str.match(/(\d{1,2})[:\.](\d{2})\s*[-–]\s*(\d{1,2})[:\.](\d{2})/);
+    if(m)return{start:String(m[1]).padStart(2,'0')+':'+m[2],end:String(m[3]).padStart(2,'0')+':'+m[4]};
+    return null;
+  }
+
+  // Expand "Monday to Friday", "Monday Wednesday Friday", or single day → array of ISO date strings
+  function parseDateRange(str){
+    str=(str||'').trim().toLowerCase();
+    if(!str)return[dayToDate(0)];
+    // "DayA to DayB" → inclusive range (handles week wrap e.g. Fri to Sun)
+    const rangeM=str.match(/^([a-z]+)\s+to\s+([a-z]+)$/);
+    if(rangeM){
+      const s=dayMap[rangeM[1].replace(/[^a-z]/g,'')],e=dayMap[rangeM[2].replace(/[^a-z]/g,'')];
+      if(s!==undefined&&e!==undefined){
+        const dates=[];let cur=s;
+        for(let i=0;i<=7;i++){dates.push(dayToDate(cur%7));if(cur%7===e)break;cur++;}
+        return dates;
+      }
+    }
+    // Multiple space-separated day names: "Monday Wednesday Friday"
+    const dayParts=str.split(/\s+/).map(t=>t.replace(/[^a-z]/g,'')).filter(t=>t&&t!=='to'&&dayMap[t]!==undefined);
+    if(dayParts.length>1)return dayParts.map(t=>dayToDate(dayMap[t]));
+    // Single day or absolute date
+    return[parseDateToken(str)];
+  }
+
+  const workers=[],customers=[],shifts=[];
+  const workerSet=new Set(),customerSet=new Set();
+  let currentCustomer=null;
+  const lines=text.split('\n').map(l=>l.trim()).filter(l=>l);
+
+  for(const rawLine of lines){
+    const clean=rawLine.replace(/\*+/g,'').trim();
+    if(/^(?:week|uge)\s+\d+/i.test(clean))continue;
+    if(/^on\s*call\s*:/i.test(clean))continue;
+    if(/^-{3,}$/.test(clean))continue;
+    const isBold=rawLine.includes('*');
+    const custM=clean.match(/^(\d+[A-Za-z]?)\s*[-.:]\s+(.+)/);
+    if(isBold&&custM){
+      let cName=custM[2].split('+')[0].trim();
+      cName=cName.split(/\s*[-–]\s*/)[0].trim();
+      if(!customerSet.has(cName.toLowerCase())){customerSet.add(cName.toLowerCase());customers.push({name:cName,address:''});}
+      currentCustomer=cName; continue;
+    }
+    if(!currentCustomer)continue;
+    const wl=clean.replace(/^\d+\.\s*/,'').trim();
+    if(/^(?:off|abc|xyz|tbd|\?+)$/i.test(wl))continue;
+    if(/,\s*off\b/i.test(wl))continue;
+    if(/\boff\b/i.test(wl)&&!/\d{1,2}[:.]\d{2}/.test(wl))continue;
+    const timeM=parseTime(wl); if(!timeM)continue;
+    const noTime=wl.replace(/kl\.?\s*/i,'').replace(/\d{1,2}[:.]\d{2}\s*[-–]\s*\d{1,2}[:.]\d{2}/,'').replace(/,.*$/,'').trim();
+    const toks=noTime.split(/\s{2,}|\t/).map(t=>t.trim()).filter(Boolean);
+    let workerName='',dateToken='';
+    if(toks.length>=2){workerName=toks[0];dateToken=toks.slice(1).join(' ');}
+    else{
+      const noWeek=noTime.replace(/\b(?:week|uge)\s+\d+\b/gi,'').replace(/\s+/,' ').trim();
+      const parts=noWeek.split(/\s+/);
+      let firstDayIdx=-1;
+      for(let j=0;j<parts.length;j++){const tok=parts[j].toLowerCase().replace(/[^a-z]/g,'');if(tok&&tok!=='to'&&dayMap[tok]!==undefined){firstDayIdx=j;break;}}
+      if(firstDayIdx>0){workerName=parts.slice(0,firstDayIdx).join(' ');dateToken=parts.slice(firstDayIdx).join(' ');}
+      else if(firstDayIdx===0){workerName='';dateToken=parts.join(' ');}
+      else{workerName=parts[0]||'';}
+    }
+    workerName=workerName.replace(/^\d+\.?\s*/,'').trim();
+    if(!workerName||workerName.length<2)continue;
+    const shiftDates=parseDateRange(dateToken);
+    if(!workerSet.has(workerName.toLowerCase())){workerSet.add(workerName.toLowerCase());workers.push({name:workerName});}
+    for(const shiftDate of shiftDates){
+      shifts.push({workerName,customerName:currentCustomer,date:shiftDate,startTime:timeM.start,endTime:timeM.end});
+    }
+  }
+  return{workers,customers,shifts,weekNum,weekYear};
+}
+
+function renderWaParseResult(parsed){
+  const {workers,customers,shifts,weekNum,weekYear}=parsed;
+  const container=el('waParseResult'); if(!container)return;
+  if(!shifts.length){
+    container.innerHTML='<div style="text-align:center;padding:30px;color:var(--gray-400);background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);margin-top:16px">⚠️ No shift data found. Make sure customer names are wrapped in *asterisks* and worker lines contain a time range like 09:00-17:00.</div>';
+    return;
+  }
+  container.innerHTML='<div class="wa-parse-result">'
+    +'<div class="card-header">'
+    +'<div class="card-title">📋 Parsed — Week '+weekNum+' / '+weekYear+'</div>'
+    +'<div style="display:flex;gap:10px;align-items:center">'
+    +'<span style="font-size:12px;color:var(--gray-500)">'+workers.length+' worker'+(workers.length===1?'':'s')+' · '+customers.length+' customer'+(customers.length===1?'':'s')+' · '+shifts.length+' shift'+(shifts.length===1?'':'s')+'</span>'
+    +'<button class="btn btn-primary btn-sm" onclick="waConfirmImport()">✅ Import All</button>'
+    +'</div></div>'
+    +'<div class="table-wrap"><table>'
+    +'<thead><tr><th>Worker</th><th>Customer / Location</th><th>Date</th><th>Time</th></tr></thead>'
+    +'<tbody>'+shifts.map(s=>'<tr><td style="font-weight:600">'+s.workerName+'</td><td>'+s.customerName+'</td><td>'+s.date+'</td><td>'+s.startTime+'–'+s.endTime+'</td></tr>').join('')
+    +'</tbody></table></div></div>';
+  window._waParsed={workers,customers,shifts};
+  setText('waImportHint','✓ Found '+shifts.length+' shifts, '+workers.length+' new workers, '+customers.length+' new customers');
+}
+
+function waConfirmImport(){
+  const parsed=window._waParsed;
+  if(!parsed){toast('Nothing to import','error');return;}
+  const{workers,customers,shifts}=parsed;
+  let nw=0,nc=0,ns=0;
+  const workerIdMap={};
+  DB.getArr('workers').forEach(w=>{workerIdMap[w.name.toLowerCase()]=w.id;});
+  workers.forEach(w=>{
+    const k=w.name.toLowerCase();
+    if(!workerIdMap[k]){
+      const id=genId(),pw=genPassword();
+      const email=w.name.toLowerCase().replace(/\s+/g,'.')+'.wa@greenalliance.dk';
+      DB.push('workers',{id,name:w.name,role:'Cleaner',email,hourlyRate:145,phone:'',status:'active',createdAt:Date.now()});
+      const users=DB.getArr('users');
+      if(!users.find(u=>u.email===email))DB.push('users',{id:genId(),name:w.name,email,password:pw,role:'worker',workerId:id});
+      workerIdMap[k]=id; nw++;
+    }
+  });
+  const custIdMap={};
+  DB.getArr('customers').forEach(c=>{custIdMap[c.name.toLowerCase()]=c.id;});
+  customers.forEach(c=>{
+    const k=c.name.toLowerCase();
+    if(!custIdMap[k]){
+      const id=genId();
+      DB.push('customers',{id,name:c.name,address:c.address||'',rate:185,contact:'',email:'',phone:'',cvr:'',createdAt:Date.now()});
+      custIdMap[k]=id; nc++;
+    }
+  });
+  shifts.forEach(s=>{
+    const wid=workerIdMap[s.workerName.toLowerCase()]||null;
+    const cid=custIdMap[s.customerName.toLowerCase()]||null;
+    const existing=DB.getArr('shifts');
+    if(!existing.find(sh=>sh.workerId===wid&&sh.date===s.date&&sh.startTime===s.startTime)){
+      DB.push('shifts',{id:genId(),workerId:wid,workerName:s.workerName,customerId:cid,customerName:s.customerName,date:s.date,startTime:s.startTime,endTime:s.endTime,status:'scheduled',createdAt:Date.now()});
+      ns++;
+    }
+  });
+  toast('✅ Imported: '+ns+' shifts, '+nw+' workers, '+nc+' customers','success');
+  renderDashboard();renderWorkers();renderCustomers();renderShiftList();renderWhatsApp();
+  window._waParsed=null;
+  if(el('waParseResult'))el('waParseResult').innerHTML='';
+  if(el('waImportText'))el('waImportText').value='';
+  if(el('waImportHint'))el('waImportHint').textContent='';
+  waTab('export');
+}
+
+// ===== RESET =====
+function resetAllData(){
+  if(!confirm('This will permanently delete ALL workers, customers, shifts and clock logs.\n\nAre you sure?'))return;
+  ['workers','customers','shifts','clocklogs','seeded'].forEach(k=>DB.del(k));
+  DB.init();
+  window._waParsed=null;
+  toast('All data cleared — starting fresh','success');
+  renderDashboard();renderWorkers();renderCustomers();renderShiftList();renderSchedule();renderClockLog();renderSalary();renderInvoices();
+  doLogout();
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded',()=>{
+  DB.init();
+  const s=getSession();
+  if(s){
+    if(s.role==='worker'){
+      el('workerPortal')?.classList.add('active');
+      el('loginScreen')?.classList.add('hidden');
+      initWorkerPortal();
+    } else {
+      el('appShell')?.classL
