@@ -2539,4 +2539,12 @@ document.addEventListener('DOMContentLoaded',()=>{
       el('loginScreen')?.classList.add('hidden');
       initWorkerPortal();
     } else {
-      el('appShell')?.classL
+      el('appShell')?.classList.add('active');
+      el('loginScreen')?.classList.add('hidden');
+      initAdminApp();
+    }
+  }
+});
+</script>
+</body>
+</html>
